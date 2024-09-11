@@ -1,0 +1,29 @@
+---
+title: "Week2"
+author: "Retno K. Ningrum"
+date: "2024-09-10"
+output: html_document
+---
+
+```{r}
+install.packages("palmerpenguins")
+
+#pull the library
+library(palmerpenguins)
+library(tidyverse)
+
+#look at the data
+view(penguins)
+head(penguins)
+tail(penguins)
+glimpse(penguins)
+
+#create a ggplot
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm, y = bill_length_mm, color = species)) + #ecerytime adding a layer, then use +
+  geom_point()
+
+
+
+```
+
