@@ -7,6 +7,7 @@ output: html_document
 
 ```{r}
 install.packages("palmerpenguins")
+install.packages("devtools")
 
 ####Load libraries ####
 library(palmerpenguins)
@@ -121,6 +122,78 @@ ggplot(data = penguins,
        y = " Bill length (mm)") +
   scale_colour_viridis_d()+
   guides(color = FALSE) # removing legend
+
+```
+```{r}
+###Add a best fit line #####
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm)) +
+  geom_point() +
+  geom_smooth() +
+  labs( x = "Bill depth (mm)",
+        y = "Bill length (mm)")
+
+##want to use linear model in geom smooth
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs( x = "Bill depth (mm)",
+        y = "Bill length (mm)")
+
+##Want to use by species, lm in each species
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     group = species,
+                     color = species)) +  #add the grouping, can use color as well to grouping 
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs( x = "Bill depth (mm)",
+        y = "Bill length (mm)") +
+  scale_colour_viridis_d()
+
+```
+
+```{r}
+#####just for fun ~ a thoughtful package
+install.packages("praise")
+library(praise)
+praise()
+praise()
+```
+```{r}
+###Scales
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     group = species,
+                     color = species)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs( x = "Bill depth (mm)",
+        y = "Bill length (mm)") +
+  scale_colour_viridis_d() +
+  scale_x_continuous(limits = c(0,20)) + #dont show data from x axis 0 to 20
+  scale_y_continuous(limits = c(0,50)) #dont show data from y axis from 0 to 50
+
+
+#try breaks instead of limits
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     group = species,
+                     color = species)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs( x = "Bill depth (mm)",
+        y = "Bill length (mm)") +
+  scale_colour_viridis_d() +
+  scale_x_continuous(breaks = c(14,17,21), #use this number as limits break then
+                     labels = c("low", "medium", "high"))+  #then classify it into levels
+  scale_color_manual(values = c("orange", "purple", "blue"))
 
 ```
 
