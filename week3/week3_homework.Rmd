@@ -1,0 +1,13 @@
+---
+title: "Week3_Homework"
+author: "Retno K. Ningrum"
+date: "2024-09-11"
+output: html_document
+---
+
+```{r}
+
+
+
+```
+
