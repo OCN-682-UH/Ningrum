@@ -6,9 +6,6 @@ output: html_document
 ---
 
 ```{r}
-install.packages("palmerpenguins")
-install.packages("devtools")
-
 ####Load libraries ####
 library(palmerpenguins)
 library(tidyverse)
@@ -194,6 +191,14 @@ ggplot(data = penguins,
   scale_x_continuous(breaks = c(14,17,21), #use this number as limits break then
                      labels = c("low", "medium", "high"))+  #then classify it into levels
   scale_color_manual(values = c("orange", "purple", "blue"))
+
+```
+```{r}
+####install package devtools to call code 
+## devtool is installed
+install.packages('fastmap')
+install.packages('devtools')
+
 
 ```
 
