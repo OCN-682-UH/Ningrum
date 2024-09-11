@@ -1,5 +1,5 @@
 
-# Week 2 Repository
+# Retno Ningrum Repository
 
 ### Created by: _Retno K. Ningrum_
 
