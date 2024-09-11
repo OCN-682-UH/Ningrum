@@ -8,22 +8,119 @@ output: html_document
 ```{r}
 install.packages("palmerpenguins")
 
-#pull the library
+####Load libraries ####
 library(palmerpenguins)
 library(tidyverse)
+library(here)
 
-#look at the data
+###inspect the data
 view(penguins)
 head(penguins)
 tail(penguins)
 glimpse(penguins)
 
-#create a ggplot
+```
+
+```{r}
+### Make a simple plot ####
 ggplot(data = penguins,
-       mapping = aes(x = bill_depth_mm, y = bill_length_mm, color = species)) + #ecerytime adding a layer, then use +
-  geom_point()
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm)) +  ## this is just to create the base map (first layer), then add new layer with "+"
+  geom_point() +                             #input the point value
+  labs(x = "Bill depth (mm)",                #add the x and y axis label
+       y = " Bill length (mm)")
 
 
+## simple plot with colot
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     color = species)) +     # tell R to collor by species
+  geom_point() +                             #input the point value
+  labs(title = "Bill depth and length" ,     #add tittle at the map data
+       subtitle = "Dimensions for Adelie, Chinstrap, and Gentoo Penguins", #add subtitle
+       x = "Bill depth (mm)",                #add the x and y axis label
+       y = " Bill length (mm)",
+       color = "Species",                    #rename the legend in color into "Species"
+       caption = "Source: Palmer Station LTER/ palmerpenguins package") + #add caption below the data frame
+  scale_color_viridis_d() #to choose colorblind friendly color
+
+
+#simple plot with different shapes
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     color = species,        # tell R to collor by species
+                     shape = island)) +      # to shape by island
+  geom_point() +                             #input the point value
+  labs(title = "Bill depth and length" ,     #add tittle at the map data
+       subtitle = "Dimensions for Adelie, Chinstrap, and Gentoo Penguins", #add subtitle
+       x = "Bill depth (mm)",                #add the x and y axis label
+       y = " Bill length (mm)",
+       color = "Species",                    #rename the legend in color into "Species"
+       caption = "Source: Palmer Station LTER/ palmerpenguins package") + #add caption below the data frame
+  scale_color_viridis_d() 
+
+#simple plot with different size
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     color = species,        # tell R to collor by species
+                     size = body_mass_g,     # to visualize body mass in size
+                     alpha = flipper_length_mm)) +  #to add transparency based on flipper length 
+  geom_point() +                             #input the point value
+  labs(title = "Bill depth and length" ,     #add tittle at the map data
+       subtitle = "Dimensions for Adelie, Chinstrap, and Gentoo Penguins", #add subtitle
+       x = "Bill depth (mm)",                #add the x and y axis label
+       y = " Bill length (mm)",
+       color = "Species",                    #rename the legend in color into "Species"
+       caption = "Source: Palmer Station LTER/ palmerpenguins package") + #add caption below the data frame
+  scale_color_viridis_d() 
+
+```
+
+```{r}
+### Facetting ####
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm)) +  ## this is just to create the base map (first layer), then add new layer with "+"
+  geom_point() +                             #input the point value
+  facet_grid( species ~ sex) +               #adding facet grid used if want to see by row ~ column
+  labs(x = "Bill depth (mm)",                #add the x and y axis label
+       y = " Bill length (mm)")
+
+
+
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm)) +  ## this is just to create the base map (first layer), then add new layer with "+"
+  geom_point() +                             #input the point value
+  facet_wrap(~ species) +                    #adding facet wrap using one category, more simple
+  labs(x = "Bill depth (mm)",                #add the x and y axis label
+       y = " Bill length (mm)")
+
+
+
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm)) +  ## this is just to create the base map (first layer), then add new layer with "+"
+  geom_point() +                             #input the point value
+  facet_wrap(~ species, ncol = 2) +          #adding facet wrap using one category, in 2 column
+  labs(x = "Bill depth (mm)",                #add the x and y axis label
+       y = " Bill length (mm)")
+
+
+####adding color#####
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     color = species)) +  ## this is just to create the base map (first layer), then add new layer with "+"
+  geom_point() +                             #input the point value
+  facet_grid(species ~ sex) +          #adding facet wrap using one category, in 2 column
+  labs(x = "Bill depth (mm)",                #add the x and y axis label
+       y = " Bill length (mm)") +
+  scale_colour_viridis_d()+
+  guides(color = FALSE) # removing legend
 
 ```
 
