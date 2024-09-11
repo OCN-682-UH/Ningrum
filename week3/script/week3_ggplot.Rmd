@@ -196,9 +196,159 @@ ggplot(data = penguins,
 ```{r}
 ####install package devtools to call code 
 ## devtool is installed
-install.packages('fastmap')
-install.packages('devtools')
+library(devtools)
+library(ps)
 
+# devtools::install_github("dill/beyonce")
+
+library(beyonce)
+
+###try the pallete
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     group = species,
+                     color = species)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs( x = "Bill depth (mm)",
+        y = "Bill length (mm)") +
+  scale_colour_viridis_d() +
+  scale_x_continuous(breaks = c(14,17,21), #use this number as limits break then
+                     labels = c("low", "medium", "high"))+  #then classify it into levels
+  scale_color_manual(values = beyonce_palette(2))
+
+```
+
+```{r}
+## COORDINATES
+#coord_flip() = cartesian coordinate system with x and y axes flipped
+#coord_fixed() = cartesian coordinate system with a fixed aspect ratio 
+#coord_trans() = apply arbitary transformation of x and y positions after the data has been processed by the stat
+#coord_polar() : polar coordinates
+
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     group = species,
+                     color = species)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs( x = "Bill depth (mm)",
+        y = "Bill length (mm)") +
+  scale_colour_viridis_d() +
+  scale_x_continuous(breaks = c(14,17,21), #use this number as limits break then
+                     labels = c("low", "medium", "high"))+  #then classify it into levels
+  scale_color_manual(values = beyonce_palette(2))+
+  coord_flip() #flip the x and y axes
+
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     group = species,
+                     color = species)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs( x = "Bill depth (mm)",
+        y = "Bill length (mm)") +
+  scale_colour_viridis_d() +
+  scale_x_continuous(breaks = c(14,17,21)) + #, #use this number as limits break then
+                     #labels = c("low", "medium", "high"))+  #then classify it into levels
+  scale_color_manual(values = beyonce_palette(2))+
+  coord_fixed() # give exactly 1:1 ratio
+
+
+### change coordinates : transform x y axis (log10)
+#check without log transformed
+ggplot(diamonds, aes(carat, price)) +
+  geom_point()
+
+#check with logtransform
+ggplot(diamonds, aes(carat, price)) +
+  geom_point() +
+  coord_trans(x = "log10", y = "log")
+
+
+#make the data into polar, using the polar coordinate
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     group = species,
+                     color = species)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs( x = "Bill depth (mm)",
+        y = "Bill length (mm)") +
+  scale_colour_viridis_d() +
+  scale_x_continuous(breaks = c(14,17,21)) + #, #use this number as limits break then
+                     #labels = c("low", "medium", "high"))+  #then classify it into levels
+  scale_color_manual(values = beyonce_palette(2))+
+  coord_polar()
+
+```
+```{r}
+### THEME ####
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     group = species,
+                     color = species)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs( x = "Bill depth (mm)",
+        y = "Bill length (mm)") +
+  scale_colour_viridis_d() +
+  scale_x_continuous(breaks = c(14,17,21)) + #, #use this number as limits break then
+                     #labels = c("low", "medium", "high"))+  #then classify it into levels
+  scale_color_manual(values = beyonce_palette(2))+
+  theme_bw() #CHECK website datanovia for other different theme
+
+#change the font size
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     group = species,
+                     color = species)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs( x = "Bill depth (mm)",
+        y = "Bill length (mm)") +
+  scale_colour_viridis_d() +
+  scale_x_continuous(breaks = c(14,17,21)) + #, #use this number as limits break then
+                     #labels = c("low", "medium", "high"))+  #then classify it into levels
+  scale_color_manual(values = beyonce_palette(2))+
+  theme_bw() +
+  theme(axis.title = element_text(size = 20, #change the size of axis label
+                                  color = "red"), #re-color the the font axis
+                                  panel.background = element_rect(fill = "linen")) #change color of the panel
+
+```
+```{r}
+####save the plot###
+ggsave(here("week3", "output", "penguin.png"),
+       width = 7, height = 5) #change the height and width of the final png 
+
+
+#save the plot as an object
+plot1 <- ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     group = species,
+                     color = species)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs( x = "Bill depth (mm)",
+        y = "Bill length (mm)") +
+  scale_colour_viridis_d() +
+  scale_x_continuous(breaks = c(14,17,21)) + #, #use this number as limits break then
+                     #labels = c("low", "medium", "high"))+  #then classify it into levels
+  scale_color_manual(values = beyonce_palette(2))+
+  theme_bw() +
+  theme(axis.title = element_text(size = 20, #change the size of axis label
+                                  color = "red"), #re-color the the font axis
+                                  panel.background = element_rect(fill = "linen")) #change color of the panel
+
+plot1
 
 ```
 
