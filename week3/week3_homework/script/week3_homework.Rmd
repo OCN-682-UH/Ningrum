@@ -16,8 +16,9 @@ library(here) #to connect with github folder
 library(devtools) #to call other package, Im using this to call beyonce color palette
 library(ps) #need this if I want to use the devtools (it is mentioned in the warning)
 library(gifski) #need this to render for the gif output 
-library(av)
+library(av) #need this to show the video visual
 library(beyonce) #need this to use beyonce color palatte
+library(ggthemes) #need this to use the theme in the base of data frame
 
 ```
 
@@ -32,44 +33,33 @@ glimpse(penguins)
 #After inspect the data, I want to make a visualization about the bill depth and bill length of each species in different island. in Other words, I want to use the x- axis as the bill depth, y-axis as the bill length and colored the data point by location, then faceted it by species. I will also put the linear model and placing the geom smooth, and do the transformation of the data. 
 
 ```
-```{r}
-###### CREATING THE PLOT #######
-
-ggplot(data = penguins, # using penguins data
-       mapping = aes(x = bill_depth_mm,  #assign the x-axis with bill depth (mm)
-                     y = bill_length_mm, #assign the y-axis with bill length (mm)
-                     color = sex)) +  #assign different color by island
-  geom_point() +  #adding the data point
-  facet_grid(species ~ island) + #facet the grid by species
-  geom_smooth(method = "lm") + #adding the linear model to see the trend 
-  labs(title = "Bill depth and length" ,     #add tittle at the map data
-       subtitle = "The Bill Dimension of Adelie, Gentoo, Chinstrap in different locations", #add subtitle
-       x = "Bill depth (mm)",                #add the x and y axis label
-       y = " Bill length (mm)",
-       color = "Species",                    #rename the legend in color into "Species"
-       caption = "Source: Palmer Station LTER/ palmerpenguins package") + #add caption below the data frame
-  scale_color_viridis_d() #to choose colorblind friendly color
-
-```
 
 ```{r}
-
+### CREATE THE PLOT ####
 animated_plot <- ggplot(data = penguins, # using penguins data
        mapping = aes(x = bill_depth_mm,  #assign the x-axis with bill depth (mm)
                      y = bill_length_mm, #assign the y-axis with bill length (mm)
                      size = body_mass_g, #assign the size following the body mass (gr)
-                     color = island))  +
-  geom_point(alpha = 0.7, show.legend = FALSE) +
-  scale_colour_manual(values = beyonce_palette(90)) +
-  scale_size(range = c(2, 12)) +
-  scale_x_log10() +
-  facet_wrap(~species) +
-  # Here comes the gganimate specific bits
-  labs(title = 'Year: {frame_time}', x = 'Bill depth (mm)', y = 'Bill length (mm)') +
-  transition_time(year) +
-  ease_aes('linear')
+                     color = sex))  +
+  geom_point(alpha = 0.7) + #this is to set the transparency of the geom point
+  scale_colour_manual(values = beyonce_palette(2)) + #to set the color based on beyonce palette
+  scale_size(range = c(2, 12)) + #to set the size of geom point based on mass, from 2 to 12
+  facet_wrap(~species) + #to facet the grid by species
+  labs(title = "Bill and Body Mass Dimension", #to assign the title of the figures
+       subtitle = 'Year: {frame_time}',        #to add subtitle with the adjusting year
+       x = 'Bill Depth (mm)',                  #to rename the x axis label
+       y = 'Bill Length (mm)',                 #to rename the y axis label
+       color = "Sex",                          #to rename the sex legend
+       size = "Body Mass (gr)",                #to rename the size legend
+       caption = "Source: Palmer Station LTER/ palmerpenguins package") + #to add caption below the data frame)
+  transition_time(year) + #to set the time transition by year
+  ease_aes('linear') + # to ensures that all changes progress evenly over time without any acceleration or deceleration.
+  theme_bw() #to use the theme_bw() as the base figures
 
-animate(animated_plot)
+animate(animated_plot) #to render the animated plot, can check the result in the viewer
+
+anim_save(here("week3","week3_homework", "output"),
+          width = 5, height = 5)
 
 ```
 
