@@ -30,7 +30,7 @@ head(penguins)
 tail(penguins)
 glimpse(penguins)
 
-#After inspect the data, I want to make a visualization about the bill depth and bill length of each species in different island. in Other words, I want to use the x- axis as the bill depth, y-axis as the bill length and colored the data point by location, then faceted it by species. I will also put the linear model and placing the geom smooth, and do the transformation of the data. 
+#After inspect the data, I want to make a visualization about the bill depth and bill length of each species both female and male. in Other words, I want to use the x- axis as the bill depth, y-axis as the bill length and colored the data point by sex (male and female), then faceted it by species. I will also put the animation to see the difference overtime. 
 
 ```
 
@@ -61,5 +61,13 @@ animate(animated_plot) #to render the animated plot, can check the result in the
 anim_save(here("week3","week3_homework", "output"),
           width = 5, height = 5)
 
+
+#####VISUAL ANALYSIS##########
+
+#The bill and body mass size between male and female is different among three different species, where it seems most of the male is larger than the female. Among three different species, Gentoo has the higher body mass and Adelie has a tendency to have lower body mass. In term of the bill depth, Gento has lower bill depth compare to other two species. However, the bill length spread were similar to chinstrap. In term of time, it seems in 2009 the variance of bill length is more varies at Adelie and Gentoo compare to 2007. But again all these conclusion still needs further statistical analysis to have a solid inference. 
+
+
 ```
+
+
 
