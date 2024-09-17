@@ -1,0 +1,16 @@
+---
+title: "Week4_class"
+author: "Retno K. Ningrum"
+date: "2024-09-17"
+output: html_document
+---
+```{r}
+### load libraries
+library(palmerpenguins)
+library(tidyverse)
+library(here)
+
+#load the data
+glimpse(penguins)
+```
+

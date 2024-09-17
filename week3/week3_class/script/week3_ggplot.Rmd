@@ -8,6 +8,7 @@ output: html_document
 ```{r}
 ####Load libraries ####
 library(palmerpenguins)
+library(ggplot2)
 library(tidyverse)
 library(here)
 
