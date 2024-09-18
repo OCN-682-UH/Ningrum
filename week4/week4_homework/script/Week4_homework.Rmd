@@ -1,0 +1,74 @@
+---
+title: 'WEEK 4 : HOMEWORK'
+author: "Retno K. Ningrum"
+date: "2024-09-18"
+output: html_document
+---
+
+```{r}
+### load libraries ###
+library(dplyr)
+library(ggplot2)#to use ggplot package
+library(palmerpenguins)#to use the palmer penguin data
+library(here)#to save the output in certain folder
+library(ggthemes)#need this to use the theme in the base of data frame
+
+#load the data and check the data before we do the manipulation
+head(penguins)
+glimpse(penguins)
+str(penguins)
+
+```
+
+```{r}
+# 1. calculates the mean and variance of body mass by species, island, and sex without any NAs
+
+penguins %>% 
+  group_by(species, island, sex) %>%                           #group the data by species, island and sex
+  summarise(mean_body_mass = mean(body_mass_g, na.rm=TRUE),    #add calculation of mean per group
+            variance_body_mass = var(body_mass_g, na.rm=TRUE)) #add calculation of variance per group
+
+```
+```{r}
+# 2. filters out (i.e. excludes) male penguins, then calculates the log body mass, then selects only the columns for species, island, sex, and log body mass, then use these data to make any plot. Make sure the plot has clean and clear labels and follows best practices. Save the plot in the correct output folder.
+
+# data cleaning and manipulation
+df <- penguins %>%
+  filter(!is.na(sex), !is.na(body_mass_g)) %>%    # Filter out NAs in 'sex' and 'body_mass_g'
+  filter(sex != "male") %>%                       # Filter out male penguins
+  mutate(log_body_mass = log(body_mass_g)) %>%    # Create a new column for log body mass
+  select(species, island, sex, log_body_mass)     # Select specific columns
+
+view(df) #check the data
+
+# Corrected violin plot code
+penguin_violin <- ggplot(df, aes(x = species, y = log_body_mass)) +       #create plot with the assigned x y data
+  geom_violin() +                                                         #add the violin type of plot
+  geom_jitter(alpha = 0.2, color = "purple") +                            #add the jitter to represent real data
+  facet_wrap(~ island) +                                                  #facetted by island
+  stat_summary(fun = "mean",                                              #create a summary point represent mean
+               geom = "point",                                            #assign as a point
+               aes(color = "mean"),                                       #assign the color to "mean"
+               size = 1.5) +  # Add point for mean with color and size    #the point of median size is 1.5
+  stat_summary(fun = "median",                                            #create a summary point to represent median
+               geom = "point",                                            #assign as a point
+               aes(color = "median"),                                     #assign the color to "median"
+               size = 1.5) +  # Add point for median with color and size  #put the color
+  scale_color_manual(values = c("mean" = "blue", "median" = "red")) +     # Define colors for mean and median
+  labs(title = "Female Birds Body Mass Variation" ,                              #add tittle at the map data
+       subtitle = "in three different island (Biscoe, Dream, Torgersen)", #add subtitle
+       x = "species",                                                     #add the x axis label
+       y = " Body Mass (log)",                                            #add the y axis label
+       color = "",                                                        #do not put title on lable
+       caption = "Source: Palmer Station LTER/ palmerpenguins package") +  #add caption below the data frame
+  theme_gray()                                                             #use the gray theme
+
+#check the result
+penguin_violin
+
+# Save the plot in the correct output folder
+ggsave(filename = here("week4", "week4_homework", "output", "penguin_violin.png"), 
+       plot = penguin_violin, width = 7, height = 5)
+
+```
+
