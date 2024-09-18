@@ -5,8 +5,8 @@ date: "2024-09-18"
 output: html_document
 ---
 
+### load libraries and check the data
 ```{r}
-### load libraries ###
 library(dplyr)
 library(ggplot2)         #to use ggplot package
 library(palmerpenguins)  #to use the palmer penguin data
@@ -17,13 +17,12 @@ library(ggthemes)        #need this to use the theme in the base of data frame
 head(penguins)      #check first 6 rows of data
 glimpse(penguins)   #check overall data
 str(penguins)       #check overall data
-view(penguins)
+View(penguins)
 
 ```
 
+##1. calculates the mean and variance of body mass by species, island, and sex without any NAs
 ```{r}
-# 1. calculates the mean and variance of body mass by species, island, and sex without any NAs
-
 penguins %>% 
   filter(!is.na(sex), !is.na(island), !is.na(species)) %>%     #removes all NA in sex, island and species column
   group_by(species, island, sex) %>%                           #group the data by species, island and sex
@@ -31,9 +30,9 @@ penguins %>%
             variance_body_mass = var(body_mass_g, na.rm=TRUE)) #add calculation of variance per group
 
 ```
-```{r}
-# 2. filters out (i.e. excludes) male penguins, then calculates the log body mass, then selects only the columns for species, island, sex, and log body mass, then use these data to make any plot. Make sure the plot has clean and clear labels and follows best practices. Save the plot in the correct output folder.
 
+## 2. filters out (i.e. excludes) male penguins, then calculates the log body mass, then selects only the columns for species, island, sex, and log body mass, then use these data to make any plot. Make sure the plot has clean and clear labels and follows best practices. Save the plot in the correct output folder.
+```{r}
 #### data cleaning and manipulation
 df <- penguins %>%
   filter(!is.na(sex), !is.na(body_mass_g)) %>%    # Filter out NAs in 'sex' and 'body_mass_g'
@@ -42,7 +41,7 @@ df <- penguins %>%
   select(species, island, sex, log_body_mass)     # Select specific columns
 
 #check the data
-view(df) 
+View(df) 
 
 ### data visualization
 penguin_violin <- ggplot(df, aes(x = species, y = log_body_mass)) +        #create plot with the assigned x y data
