@@ -21,7 +21,7 @@ View(penguins)
 
 ```
 
-##1. calculates the mean and variance of body mass by species, island, and sex without any NAs
+## 1. calculates the mean and variance of body mass by species, island, and sex without any NAs
 ```{r}
 penguins %>% 
   filter(!is.na(sex), !is.na(island), !is.na(species)) %>%     #removes all NA in sex, island and species column
@@ -32,8 +32,9 @@ penguins %>%
 ```
 
 ## 2. filters out (i.e. excludes) male penguins, then calculates the log body mass, then selects only the columns for species, island, sex, and log body mass, then use these data to make any plot. Make sure the plot has clean and clear labels and follows best practices. Save the plot in the correct output folder.
+
+### data cleaning and manipulation
 ```{r}
-#### data cleaning and manipulation
 df <- penguins %>%
   filter(!is.na(sex), !is.na(body_mass_g)) %>%    # Filter out NAs in 'sex' and 'body_mass_g'
   filter(sex != "male") %>%                       # Filter out male penguins
@@ -42,8 +43,11 @@ df <- penguins %>%
 
 #check the data
 View(df) 
+```
 
-### data visualization
+## data visualization
+```{r}
+#create the plot
 penguin_violin <- ggplot(df, aes(x = species, y = log_body_mass)) +        #create plot with the assigned x y data
   geom_violin() +                                                          #add the violin type of plot
   geom_jitter(alpha = 0.2, color = "purple") +                             #add the jitter to represent real data
