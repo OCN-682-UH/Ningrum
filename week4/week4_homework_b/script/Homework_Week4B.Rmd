@@ -1,0 +1,93 @@
+---
+title: 'WEEK 4: HOMEWORK 4B'
+author: "Retno K. Ningrum"
+date: "2024-09-23"
+output: html_document
+---
+
+### load libraries
+```{r}
+library(dplyr)         #need this to use %>%
+library(tidyr)         #need this to tidy the data
+library(ggplot2)       #to use ggplot package
+library(tidyverse)     #lots of function to tidying the data
+library(here)          #to connect with github folder
+
+```
+
+### Read the data and inspect the data
+```{r}
+#Read the data and assign it as "df"
+df <- read_csv(here("week4", "week4_homework_b", "data", "chemicaldata_maunalua.csv"))   
+
+##Inspect the data
+head(df)    #to check the first 6 rows of the data
+tail(df)    #to check the last 6 rows of the data
+glimpse(df) #to see the overall data
+
+```
+### Data Cleaning, Remove all NAs, Separate the tide_time column, filtered out data
+```{r}
+df_clean <- df %>%                                      #create a clean dataset by using the df data
+  drop_na() %>%                                         #removes all the Na(s)
+  separate(Tide_time, into = c("Tide", "Time"),         #separate the "Tide_time column into "Tide" and "Time
+           sep = "_") %>%                               #separate after these sign "_"
+  select(Temp_in, Salinity, Zone, Tide, Time, Season)   #Select only these column
+
+View(df_clean)                                          #check the clean dataset
+glimpse(df_clean)                                       #review the clean dataset
+```
+
+### Make a summary statistics and export the csv
+```{r}
+#create a summary statistic (descriptive statistic)
+summary_stats <- df_clean %>%               #create a new dataset using df_clean, then
+  group_by(Zone, Season, Time, Tide) %>%    #group by xone, season, time and tide, then
+  summarise(                                #create a summary, where
+    #temperature summary
+    temp_mean = mean(Temp_in),              #calculate the mean of temperature
+    temp_sd = sd(Temp_in),                  #calculate the standard deviation of temperature
+    temp_median = median(Temp_in),          #calculate the median of temperature
+    temp_max = max(Temp_in),                #calculate the highest temperature
+    temp_min = min(Temp_in),                #calculate the lowest temperature
+    
+    #salinity summary
+    salinity_mean = mean(Salinity),         #calculate the mean of salinity
+    salinity_sd = sd(Salinity),             #calculate the standard deviation of salinity
+    Salinity_median = median(Salinity),     #calculate the median of salinity
+    salinity_max = max(Salinity),           #calculate the hihest value of salinity
+    salinity_min = min(Salinity)            #calculate the lowest value of salinity
+  )
+
+#check the data  
+View(summary_stats)
+
+#export the csv into assigned folder
+write_csv(summary_stats, here("week4", "week4_homework_b", "output", "summary_stats.csv"))
+
+```
+
+### Make a plot
+```{r}
+
+#create the plot using ggplot
+temp_salinity <- ggplot(df_clean,                            #create a plot using ggplot, use data from df_clean
+       aes(x = Temp_in, y = Salinity,       #assign the x axis as the temperature, and y axis as the salinity
+           color = Time, shape = Tide)) +   #show different color by time, and different shape by tide
+  geom_point(size = 1.5) +                  #Add the data point and adjust point size
+  facet_grid(Zone ~ Season) +               #Facet by Zone and Season
+  labs(title = "Relationship Between Temperature and Salinity",                #add title
+       subtitle = "in four zones (Ambient, Diffuse, Offshore, and Transition)",#add subtitle
+       x = "Temperature (°C)",                                                 #add x axis label
+       y = "Salinity (ppt)") +                                                 #add y axis label
+  theme_gray()                                                                 #use a gray theme
+
+#check the plot
+temp_salinity   
+
+#Save the plot in the correct output folder
+ggsave( filename =  here("week4", "week4_homework_b", "output", "temp_salinity.png"), 
+       plot = temp_salinity, width = 7, height = 5)
+```
+
+
