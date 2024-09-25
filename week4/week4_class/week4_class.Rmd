@@ -21,7 +21,7 @@ filter(.data = penguins, sex == "female")
 # "=" mean sets an argument to the future
 # "==" is exactly same to 
 
-filter(.data = penguins, year == "2008") #filter data in year 2008
+filter(.data = penguins, year == 2008) #filter data in year 2008
 filter(.data = penguins, body_mass_g > 5000) #filter data where body mass is greater than 5000
 
 filter(.data = penguins, sex == "female" & body_mass_g > 5000) # "& and comma is the same
