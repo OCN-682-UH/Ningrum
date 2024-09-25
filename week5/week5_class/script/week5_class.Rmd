@@ -1,0 +1,102 @@
+---
+title: "Week5_class"
+author: "Retno K. Ningrum"
+date: "2024-09-24"
+output: html_document
+---
+
+### load libraries
+```{r}
+### load libraries
+library(tidyverse)
+library(here)
+
+```
+
+### load the data
+```{r}
+site_df <- read_csv(here("week5", "week5_class", "data", "site.characteristics.data.csv"))
+top_df <- read_csv(here("week5", "week5_class", "data", "Topt_data.csv"))
+
+#inspect data
+glimpse(site_df)
+glimpse(top_df)
+
+```
+### pivot the data
+```{r}
+## Pivot the data
+site_df_wide <- site_df %>%                    #create new data frame using site_df data
+  pivot_wider(names_from = parameter.measured, #pivot wider, using the names from "parameter.measured" 
+              values_from = values)            #and values from "values"
+head(site_df_wide)                             #check the head of data
+
+##arrange the data
+site_df_wide <- site_df %>%                      
+  pivot_wider(names_from = parameter.measured,  
+              values_from = values) %>%
+  arrange(site.letter)                         #arrange the letter by using the site.letter by abjad
+
+## try join function
+FullData_left<- left_join(top_df, site_df_wide) %>%          #join the data from site_df_wide to top_df
+  relocate(where(is.numeric), .after = where(is.character))  #relocate numerical data after character
+
+head(FullData_left)
+glimpse(FullData_left)
+
+#create a summary statistic (descriptive statistic)
+## Option 1: using the summarise_at()
+summary_stats <- FullData_left %>%            #create a new dataset using df_clean, then
+  group_by(site.letter) %>%                   #group by site.letter
+  summarise_at(vars(E:Topt,                   #do vars from E to Topt, then from light to substrate.cover
+                    light:substrate.cover),   #because we dont want use site.block,then skip! using ","
+  funs(mean = mean, variance = var), na.rm = TRUE) #use the column name mean, assign as mean, column varians, assign as var. remove NAs. 
+
+
+##Option 2: long data version
+summary_stats_long <- FullData_left %>%    #use FullData_left
+  select(-site.block) %>%                  #exclude site.block
+  pivot_longer(cols = E: substrate.cover,  #pivot longer, using colom E to substrate.cover
+               names_to = "parameter",     #using new column name as "parameter"
+               values_to = "values") %>%   #and new colum to put value as "value"
+  group_by(site.letter, parameter) %>%     #group by these ..
+  summarise(mean = mean(values),           #create the summary column with mean column and varian column
+            varian = var(values))
+
+##Option 3: other way using accross()
+summary_stats2 <- FullData_left %>%
+  select(-site.block) %>%                 #exclude the site.block
+  group_by(site.letter) %>%               #group by site.letter
+  summarise(across(where(is.numeric),     #create a summary those numerical column
+                   list(mean = mean, variance = var),  #add new lists of mean and variance
+                   na.rm = TRUE))         #remove NAs
+
+#check the data  
+head(summary_stats2)
+head(summary_stats)
+head(summary_stats_long)
+```
+###tibble function to create new data frame 
+## Practice the join function
+```{r}
+#create new dataset name T1
+T1 <- tibble(Site.ID = c("A", "B", "C", "D"),         #Add new column name "Site.ID" with these values  
+             Temperature = c(14.1, 16.7, 15.3, 12.8)) #Add new column name "Temperature" with these values
+
+#create new dataset name T2
+T2 <-tibble(Site.ID = c("A", "B", "D", "E"),         #Add Site.ID column
+            pH = c(7.3, 7.8, 8.1, 7.9))              #Add pH column
+T1
+T2
+
+## Try the Join function
+left_join(T1,T2)    #merge T2 to T1, include data in T2 eventhough NA. Follow T1 (left side) pattern!
+right_join(T1, T2)  #merge T1 to T2, include data in T1 eventhough NA. Follow T2 (right side) pattern!
+full_join(T1, T2)   #join two dataset without eliminating NAs
+semi_join(T1,T2)    #those with NA, in both column dont combine
+anti_join(T1,T2)    #show category that is not same between T1 and T2
+
+
+```
+
+
