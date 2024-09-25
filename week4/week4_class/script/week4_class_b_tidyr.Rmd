@@ -1,0 +1,116 @@
+---
+title: 'WEEK 4: TIDYR'
+author: "Retno K. Ningrum"
+date: "2024-09-25"
+output: html_document
+---
+### load libraries
+```{r}
+library(tidyverse)
+library(here)
+```
+
+### read the data
+```{r}
+ChemData <- read_csv(here("week4", "week4_class", "data","chemicaldata_maunalua.csv"))
+view(ChemData)
+glimpse(ChemData)
+```
+# another way to filter out NAs
+```{r}
+ChemData_clean <- ChemData %>%
+  filter(complete.cases(.)) 
+
+view(ChemData_clean)
+```
+
+#separate one column into two 
+```{r}
+ChemData_clean <- ChemData %>%
+  drop_na() %>%                       #Remove all NAs
+  separate(col = Tide_time,           #separate the column Tide_time
+           into = c("Tide", "Time"),  #into two column name "Tide" and "Time"
+           sep = "_",                 #separate by _
+           remove =  FALSE)%>%        #keep the original tide_time column
+  unite(col = "Site_Zone",            # the name of the NEW col
+         c(Site,Zone),                # the columns to unite
+        sep = ".",                    # lets put a . in the middle
+        remove = FALSE)               # keep the original
+
+head(ChemData_clean)
+
+```
+### Pivot Longer and Pivot Wider
+```{r}
+ChemData_long <- ChemData_clean %>%
+  pivot_longer(cols = Temp_in:percent_sgd,  #choose these column from Temp_in to percent_sgd
+               names_to = "Variables",      #create new column with this name
+               values_to = "Values")        #create new column with this name, putting all values here
+view(ChemData_long)
+
+```
+
+#### calculate the mean and variance for all variables at each site
+```{r}
+ChemData_long %>%
+  group_by(Variables, Site) %>%
+  summarise(Param_means = mean(Values, na.rm = TRUE),  #create new column of means
+            Param_vars = var(Values, na.rm = TRUE))    #create new column of variance
+
+#calculate mean, variance, standard deviation for all variables by site, zone and tide
+ChemData_long %>%
+  group_by(Variables, Site, Zone, Tide) %>%
+  summarise(Param_means = mean(Values, na.rm = TRUE),
+            Param_vars = var(Values, na.rm = TRUE),
+            Param_sd = sd(Values, na.rm = TRUE))
+
+```
+
+## Use facet_wrap with long data
+```{r}
+ChemData_long %>%
+  ggplot(aes(x = Site, y = Values)) +
+  geom_boxplot() +
+  facet_wrap(~Variables)
+## result not good, better to add scale. 
+
+ChemData_long %>%
+  ggplot(aes(x = Site, y = Values)) +
+  geom_boxplot() +
+  facet_wrap(~Variables, scales = "free")  # scales free following each value in each category
+```
+### use wide data in faceting
+```{r}
+ChemData_wide <- ChemData_long %>%
+  pivot_wider(names_from = "Variables",
+              values_from = "Values")
+
+head(ChemData_wide)
+```
+### FUL PRACTICE
+```{r}
+ChemData_clean <- ChemData %>%
+  drop_na() %>%    #filter out all NAs
+  separate(col = Tide_time, 
+           into =  c("Tide", "Time"),
+           sep = "_",
+           remove = FALSE) %>%
+  pivot_longer(cols = Temp_in:percent_sgd,
+               names_to = "Variables",
+               values_to = "Values") %>%
+  group_by(Variables, Site, Time) %>%
+  summarise(mean_vals = mean(Values, na.rm = TRUE)) %>%
+  pivot_wider(names_from = Variables,
+              values_from = mean_vals) %>%
+  write_csv(here("week4", "week4_class", "output", "summary.csv"))
+
+```
+### for fun
+```{r}
+library(ggbernie)
+
+ggplot(ChemData) +
+  geom_bernie(aes(x = Salinity, y = NN), bernie = "sitting")
+
+```
+
