@@ -1,0 +1,81 @@
+---
+title: "Week5b_Lubridate"
+author: "Retno K. Ningrum"
+date: "2024-09-30"
+output: html_document
+---
+
+### Call all the packages will be used
+```{r}
+library(tidyverse)
+library(here)
+library(lubridate)
+
+
+```
+
+### What time is it now ?
+```{r}
+##what time is it now ?
+now() #asking what time is it now?
+now(tzone = "EST") #Time now at EST
+now(tzone = "GMT") #time now at GMT
+
+## IF ONLY WANT THE DATE, NOT TIME
+today()
+today(tzone = "EST")
+today(tzone = "GMT")
+
+## Asking whether it is morning or night
+am(now()) #is it morning now ?
+leap_year(now()) #is it a leap (kabisat) year ?
+
+```
+### Lubridate data specification
+#IMPORTANT : your date must be a character
+```{r}
+#DATE
+ymd("2021-02-24")
+mdy("02/24/2021")
+mdy("February 24 2021")
+
+#Adding TIME
+ymd_hms("2021-02-24 10:22:20 PM") #_hms mean hour minutes seconds
+mdy_hms("January 24 2024 22:22:20")
+mdy_hm("02/24/2024 10:22 PM")
+```
+### Extracting specific date or time elements from datetimes
+#make a vector of dates
+```{r}
+#create a string character
+datetimes <- c("02/24/2021 22:22:20",
+               "02/25/2021 11:21:10",
+               "02/26/2021 8:01:52")
+datetimes
+
+#convert to date times
+datetimes <-mdy_hms(datetimes)
+
+month(datetimes, label = TRUE, #to check whether it is "date" format or not, check on the label, if 12 level than it is month, good!
+      abbr = FALSE) #If you dont want to abbreviate it
+
+day(datetimes) #to extract the day
+wday(datetimes, label = TRUE) #extract day of week
+hour(datetimes) #extraxt the time (hour)
+minute(datetimes) #extract the minutes
+second(datetimes) #excract the second
+
+#Adding dates and times
+datetimes + hours(4) #this add 4 hours 
+
+#Adding days
+datetimes + days(2) #this add 2 days
+
+#### Rounding dates
+round_date(datetimes, "minutes") #round to nearest minutes
+round_date(datetimes, "5 mins") #round to nearest 5 minutes
+#you can do this with any set of times
+
+
+```
+
