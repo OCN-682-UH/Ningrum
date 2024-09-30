@@ -100,7 +100,7 @@ animate(animated_plot, nframes = 200,   #make into 200frames
         width = 1200, height = 600)     #set the width and length of the frames
 
 #Save the animated plot into the output folder
-anim_save(here("week5","week5_homework", "output", "mean parameters"))
+anim_save(here("week5","week5_homework", "output", "mean_parameters.gif"))
         
 ```
 
