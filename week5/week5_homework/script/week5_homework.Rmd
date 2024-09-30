@@ -61,30 +61,38 @@ Summarized_df <- All_df %>%                            #use the All_df to create
 
 ### Create the plot!
 ```{r}
+#Before create plot, I want to use facet_wrap() features by parameter, so I need to transform into long data format
+Summarized_long_df <- Summarized_df %>%
+  pivot_longer(cols = c(mean_temp, mean_sali, mean_press, mean_dept),  # Columns to pivot
+               names_to = "parameter",                                 # New column for variable names
+               values_to = "value") %>%                                # New column for variable values
+   mutate(parameter = recode(parameter,                                 # Recode variable names for better labels
+                           mean_temp = "Mean Temperature",
+                           mean_sali = "Mean Salinity",
+                           mean_press = "Mean Abs Pressure",
+                           mean_dept = "Mean Depth"))
+
 #Create the animated plot using gganimate
-animated_plot <- ggplot(Summarized_df,                      #use summarized_df, 
-                        aes(x = date_minute)) +             #assign the x axis by date_minutes
-  geom_line(aes(y = mean_temp, color = "Temperature")) +    #create 1st line as the mean temperature
-  geom_line(aes(y = mean_sali, color = "Salinity")) +       #create 2nd line as mean salinity
-  geom_line(aes(y = mean_press, color = "Pressure")) +      #create 3rd line as mean pressure
-  geom_line(aes(y = mean_dept, color = "Depth")) +          #create 4th line as mean depth
+animated_plot <- ggplot(Summarized_long_df,                      #use summarized_df, 
+                        aes(x = date_minute,
+                        y = value ,
+                        color = parameter)) +             #assign the x axis by date_minutes
+  geom_line() +
+  facet_wrap(~parameter, scales = "free_y") +
   labs(x = "Time",                                                                    #label the x axis   
        y = "Averages",                                                                #label the y axis
        title = "Averages of Temperature, Salinity, Pressure, and Depth by Minute") +  #the title
-  theme_minimal() +                                                                   #using minimal theme
-  scale_color_manual(values = c("Temperature" = "red",   #assign mean temperature as red line
-                                "Salinity" = "blue",     #assign mean salinity as blue line
-                                "Pressure" = "green",    #assign mean pressure as green line
-                                "Depth" = "purple")) +   #assign mean depth as purple line
+  theme_minimal() +   
   theme(
     plot.title = element_text(size = 20, face = "bold"),  #set the size at the title and bold the text
     axis.title.x = element_text(size = 16),               #set size of x axis
     axis.title.y = element_text(size = 16),               #set size of y axis
     axis.text = element_text(size = 14),                  #set size of axis text
     legend.title = element_text(size = 16),               #set size of legend title
-    legend.text = element_text(size = 14)                 #set size of legend text
-  ) +
-  transition_reveal(date_minute)                          #Animate the plot over time using date_minute
+    legend.text = element_text(size = 14),                #set size of legend text
+    strip.text = element_text(size = 16, face = "bold"),  #set size of each frame title text, and bold
+    legend.position = "none") +                             #removes legend
+    transition_reveal(date_minute)                          #Animate the plot over time using date_minute
 
 # Step 4: Render the animation
 animate(animated_plot, nframes = 200,   #make into 200frames
