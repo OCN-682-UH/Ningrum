@@ -78,4 +78,20 @@ round_date(datetimes, "5 mins") #round to nearest 5 minutes
 
 
 ```
+### CHALLENGE
+```{r}
+df <- read_csv(here("week5", "week5_class", "data", "CondData.csv"))
+
+#inspect the data
+glimpse(df)
+
+#convert the date column to a datetime
+df_datetime <- df %>%
+  mutate(date = mdy_hms(date))
+
+#check the data again 
+glimpse(df_datetime)
+#now the date is in the datetime (dttm) format. 
+
+```
 
