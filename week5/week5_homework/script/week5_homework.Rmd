@@ -63,10 +63,10 @@ Summarized_df <- All_df %>%                            #use the All_df to create
 ```{r}
 #Before create plot, I want to use facet_wrap() features by parameter, so I need to transform into long data format
 Summarized_long_df <- Summarized_df %>%
-  pivot_longer(cols = c(mean_temp, mean_sali, mean_press, mean_dept),  # Columns to pivot
-               names_to = "parameter",                                 # New column for variable names
-               values_to = "value") %>%                                # New column for variable values
-   mutate(parameter = recode(parameter,                                 # Recode variable names for better labels
+  pivot_longer(cols = c(mean_temp, mean_sali, mean_press, mean_dept), # Columns to pivot
+               names_to = "parameter",                            # New column for variable names
+               values_to = "value") %>%                           # New column for variable values
+   mutate(parameter = recode(parameter,                           # Recode variable names for better labels
                            mean_temp = "Mean Temperature",
                            mean_sali = "Mean Salinity",
                            mean_press = "Mean Abs Pressure",
@@ -100,7 +100,7 @@ animate(animated_plot, nframes = 200,   #make into 200frames
         width = 1200, height = 600)     #set the width and length of the frames
 
 #Save the animated plot into the output folder
-anim_save(here("week5","week5_homework", "output"))
+anim_save(here("week5","week5_homework", "output", "mean parameters"))
         
 ```
 
