@@ -59,7 +59,7 @@ Summarized_df <- All_df %>%                            #use the All_df to create
   
 ```
 
-#Create the plot!
+### Create the plot!
 ```{r}
 #Create the animated plot using gganimate
 animated_plot <- ggplot(Summarized_df,                      #use summarized_df, 
