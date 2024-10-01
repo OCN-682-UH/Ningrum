@@ -81,10 +81,12 @@ animated_plot <- ggplot(Summarized_long_df,               #use summarized_df,
              ncol = 1) +                  #facet into 1 column only
   labs(x = "Time",                                                         #label the x axis   
        y = "Averages",                                                     #label the y axis
-       title = "Averages of Temperature, Salinity, and Depth by Minute") + #the title
+       title = "Averages of Temperature, Salinity, and Depth by Minute",  #the title
+       subtitle = "Data collected on January 15, 2021") + #the subtitle
   theme_bw() +                                            #use the theme_bw
   theme(
     plot.title = element_text(size = 20, face = "bold"),  #set the size at the title and bold the text
+    plot.subtitle = element_text(size = 16),              #set size of subtitle
     axis.title.x = element_text(size = 16),               #set size of x axis
     axis.title.y = element_text(size = 16),               #set size of y axis
     axis.text = element_text(size = 14),                  #set size of axis text
@@ -96,7 +98,7 @@ animated_plot <- ggplot(Summarized_long_df,               #use summarized_df,
 
 # Step 4: Render the animation
 animate(animated_plot, nframes = 200,   #make into 200frames
-        fps = 20,                       #set the frame by 20 frame per seconds
+        fps = 40,                       #set the frame by 20 frame per seconds
         width = 600, height = 600)      #set the width and length of the frames
 
 #Save the animated plot into the output folder
