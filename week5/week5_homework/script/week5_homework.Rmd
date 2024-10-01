@@ -96,7 +96,7 @@ animated_plot <- ggplot(Summarized_long_df,               #use summarized_df,
     legend.position = "none") +                             #removes legend
     transition_reveal(date_minute)                          #Animate the plot over time using date_minute
 
-# Step 4: Render the animation
+#Render the animation
 animate(animated_plot, nframes = 200,   #make into 200frames
         fps = 40,                       #set the frame by 20 frame per seconds
         width = 600, height = 600)      #set the width and length of the frames
