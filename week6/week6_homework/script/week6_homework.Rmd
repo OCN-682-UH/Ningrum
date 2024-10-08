@@ -18,4 +18,7 @@ knitr::opts_chunk$set(echo = TRUE,
 ```
 
 # Direction
-Take any data sheets you have already worked with, create at least one table and one figure in Rmarkdown file. Create in either html, github foc, or pdf format (you must knit the file). Make sure you have headings with clear explainations of what you are doing. Practice the bold, italics, and lists. make sure your outputs and script are saved in the appropriate folders. keep proper coding etiquette. 
+Take any data sheets you have already worked with, create at least one table and one figure in Rmarkdown file. Create in either html, github doc, or pdf format (you must knit the file). Make sure you have headings with clear explainations of what you are doing. Practice the bold, italics, and lists. make sure your outputs and script are saved in the appropriate folders. keep proper coding etiquette. 
+
+# Sea Turtle Nesting Sites
+This Rmarkdown will use fake dataset that students create to practice her skills in creating publication using rmarkdown. Dataset used is about the total sea turtle nests from three different species ( *Dermochelys coriacea*, *Lepidochelys olivacea*, and *Chelonia mydas*). Dataset can be downloaded in [Student Data Repository](https://github.com/OCN-682-UH/Ningrum/blob/main/week6/week6_homework/data/RetnoNingrum_NestingTurtle_MBIO612.csv) and the metadata can be downloaded in the [Student's Data Dictionary](https://github.com/OCN-682-UH/Ningrum/blob/main/week6/week6_homework/data/RetnoNingrum_DataDictionary_MBIO612.csv).
