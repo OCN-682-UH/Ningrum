@@ -1,0 +1,32 @@
+﻿name,plot_name,desctription
+beach,beach,the name of the beach
+beach,wamlana,beach in wamlana village
+,waenibe,beach in waenibe village
+,waspait,beach name in waspait village
+weather,weather,the type of weather when nest was found
+weather,Sunny,type of weather : sunny
+,Rainny,type of weather : rainny
+sector,sector,the specific location where nest was found
+sector,Beach Sector,specific segment of each beach
+,C1,specific location within wamlana beach
+,C2,specific location within wamlana beach
+,C3,specific location within wamlana beach
+,C4,specific location within wamlana beach
+,C5,specific location within wamlana beach
+,B1,specific location within waenibe beach
+,B2,specific location within waenibe beach
+,B3,specific location within waenibe beach
+,B4,specific location within waenibe beach
+,B5,specific location within waenibe beach
+track_type,Type of Track,classification of track type (nesting and non-nesting)
+,nesting,turtle's track that resulting in egg deposit
+,non_nesting,turtle's track that not resulting in egg deposit
+species_id,Species,the type of species
+,lt,Leatherback Turtles
+,gt,Green Turtles
+,or,Olive Ridleys
+dist_htl,Distance to HTL,Distance to high tide line in meter
+eggs,Eggs,total number of eggs in one nest
+depth_nest,Depth of Nest,the depth of nest measured from surface to the bottom of the egg in centimeter
+ccl,Curved Carapace Length,the length of curved carapace in centimeters
+ccw,Curved Carapace Width,the width of curved carapace in centimeters

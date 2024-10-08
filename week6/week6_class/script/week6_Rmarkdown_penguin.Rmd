@@ -1,0 +1,148 @@
+---
+title: "Rmarkdown Practice with Penguin Dataset"
+author: "Retno K. Ningrum"
+date: "2024-10-01"
+output: 
+  html_document:
+    toc: TRUE  #if you want to create a table of content
+    toc_float: TRUE #the style how you want to show the table of content
+    theme: darkly #using the theme, you can explore more in the global options 
+  
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      fig.path = "../output/")
+```
+
+# Intro to Penguins
+today we are going to work with penguin dataset using the rmarkdown to learn **rmarkdown**
+
+### load libraries
+```{r}
+library(palmerpenguins)
+library(tidyverse)
+library(here)
+library(ggplot2)
+```
+### inspect the data
+```{r}
+glimpse(penguins)
+
+```
+
+### make some plot 
+```{r}
+penguins %>%
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm, color= species)) +
+  geom_point()+
+  geom_smooth(method = "lm") +
+  labs(x = "Bill length (mm)", y = "Bill depth (mm)") +
+  theme_bw()
+```
+
+##Change size
+#you can change size in the begining of the chunk "70%" means makes it 70% of the width
+```{r, out.width= "70%"}
+penguins %>%
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm, color= species)) +
+  geom_point()+
+  geom_smooth(method = "lm") +
+  labs(x = "Bill length (mm)", y = "Bill depth (mm)") +
+  theme_bw()
+```
+
+## change size with more specific value
+```{r, fig.width=3, fig.height=4}
+penguins %>%
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm, color= species)) +
+  geom_point()+
+  geom_smooth(method = "lm") +
+  labs(x = "Bill length (mm)", y = "Bill depth (mm)") +
+  theme_bw()
+```
+
+## change size using ratio AND center the alignment
+```{r, fig.asp=1.2, fig.align='center'}
+penguins %>%
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm, color= species)) +
+  geom_point()+
+  geom_smooth(method = "lm") +
+  labs(x = "Bill length (mm)", y = "Bill depth (mm)") +
+  theme_bw()
+```
+
+##NOTES
+# you need to have 1 figure in each R chunk
+# you need to rename your code chunk
+# now lets re-do! and rename with "penguinplot"
+#Rmarkdown cannot use "here" package, so in order to save the output, you have to set it up in the first chunck to re-direct the output. I write the begining of the cunk as   fig.path = "../output/"
+#meaning that "go back to the outer folder, then get inside to the output folder
+#once the chunck is set, then all the chunk can be rename into different figures name after r code in the first chunk
+# now lets re-do! and rename with "pengunplot"
+
+```{r penguinplot, fig.asp=1.2, fig.align='center'}
+penguins %>%
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm, color= species)) +
+  geom_point()+
+  geom_smooth(method = "lm") +
+  labs(x = "Bill length (mm)", y = "Bill depth (mm)") +
+  theme_bw()
+```
+
+#Adding caption to your figures
+```{r penguin_caption , fig.cap= "fugure xx. a scaterplot of penguin" }
+penguins %>%
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm, color= species)) +
+  geom_point()+
+  geom_smooth(method = "lm") +
+  labs(x = "Bill length (mm)", y = "Bill depth (mm)") +
+  theme_bw()
+```
+
+#save into pdf
+```{r penguin_caption2 , fig.cap= "fugure xx. a scaterplot of penguin", dev="pdf" }
+penguins %>%
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm, color= species)) +
+  geom_point()+
+  geom_smooth(method = "lm") +
+  labs(x = "Bill length (mm)", y = "Bill depth (mm)") +
+  theme_bw()
+```
+
+
+
+| Time | Session | Topic |
+|:-----|:--------|:------|
+|_left_|_center_|_right_|
+|01:10 |1       |Anatomy|
+|01:00 |2       |*Break*|
+|01:12 |2       |Tables |
+
+```{r}
+## to make a summary table directly, use kabletable
+library(kableExtra)
+library(tidyverse)
+library(dplyr)
+
+penguins %>% 
+  group_by(species) %>%
+  summarise(billmean = mean(bill_length_mm, na.rm = TRUE)) %>%
+  kbl() # make it a kable table, very basic
+
+```
+
+
+## Kable Table Package
+```{r}
+penguins %>% 
+  group_by(species) %>%
+  summarise(billmean = mean(bill_length_mm, na.rm = TRUE)) %>%
+  kbl() %>%                      # make it a kable table
+  kable_classic() %>%            #adding the theme in the kable
+  row_spec(2, bold =  T, color = "white", background = "red") %>%  #Highlight to row 2, where background color is red, and the text color is white. 
+  kable_styling(full_width = FALSE) #If you want the table not too wide
+```
+

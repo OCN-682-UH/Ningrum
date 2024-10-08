@@ -1,0 +1,21 @@
+---
+title: "Homework MBIO 612"
+subtitle: "Rmarkdown"
+author: "Retno K. Ningrum"
+date: "2024-10-08"
+output: 
+ html_document:
+    toc: TRUE       #if you want to create a table of content
+    toc_float: TRUE #the style how you want to show the table of content
+    theme: paper   #using the theme, you can explore more in the global options 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      fig.path = "../output/")
+```
+
+# Direction
+Take any data sheets you have already worked with, create at least one table and one figure in Rmarkdown file. Create in either html, github foc, or pdf format (you must knit the file). Make sure you have headings with clear explainations of what you are doing. Practice the bold, italics, and lists. make sure your outputs and script are saved in the appropriate folders. keep proper coding etiquette. 
