@@ -11,14 +11,124 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE,
-                      message = FALSE,
-                      warning = FALSE,
-                      fig.path = "../output/")
+knitr::opts_chunk$set(echo = TRUE,                  #display the code
+                      message = FALSE,              #do not show the message
+                      warning = FALSE,              #do not show the warning
+                      fig.path = "../output/")      #set the output for image
 ```
 
 # Direction
 Take any data sheets you have already worked with, create at least one table and one figure in Rmarkdown file. Create in either html, github doc, or pdf format (you must knit the file). Make sure you have headings with clear explainations of what you are doing. Practice the bold, italics, and lists. make sure your outputs and script are saved in the appropriate folders. keep proper coding etiquette. 
 
 # Sea Turtle Nesting Sites
-This Rmarkdown will use fake dataset that students create to practice her skills in creating publication using rmarkdown. Dataset used is about the total sea turtle nests from three different species ( *Dermochelys coriacea*, *Lepidochelys olivacea*, and *Chelonia mydas*). Dataset can be downloaded in [Student Data Repository](https://github.com/OCN-682-UH/Ningrum/blob/main/week6/week6_homework/data/RetnoNingrum_NestingTurtle_MBIO612.csv) and the metadata can be downloaded in the [Student's Data Dictionary](https://github.com/OCN-682-UH/Ningrum/blob/main/week6/week6_homework/data/RetnoNingrum_DataDictionary_MBIO612.csv).
+__This Rmarkdown will use fake dataset__ that students create to practice her skills in creating publication using rmarkdown. Dataset used is about the total sea turtle nests from three different species ( *Dermochelys coriacea*, *Lepidochelys olivacea*, and *Chelonia mydas*). Dataset can be downloaded in [Student Data Repository](https://github.com/OCN-682-UH/Ningrum/blob/main/week6/week6_homework/data/RetnoNingrum_NestingTurtle_MBIO612.csv) and the metadata can be downloaded in the [Student's Data Dictionary](https://github.com/OCN-682-UH/Ningrum/blob/main/week6/week6_homework/data/RetnoNingrum_DataDictionary_MBIO612.csv).
+
+ 
+![_Figure 1. Sea turtle nesting site location, Buru Islan, Maluku Province, Indonesia_](https://raw.githubusercontent.com/OCN-682-UH/Ningrum/refs/heads/main/week6/week6_homework/data/site_location.jpg)
+
+#### Libraries Needed for calculation and plot making
+```{r}
+library(ggplot2)         #for data visualization
+library(dplyr)           #for data manipulation
+library(here)            #for handling the file path
+library(tidyverse)       #to tidy the data
+library(kableExtra)      #to create a table
+
+```
+
+
+## Sea turtle nest distribution by villages
+```{r nest_distribution, fig.width= 12, fig.height=6, fig.align= 'center'}
+df <- read_csv(here("week6", "week6_homework", "data", "RetnoNingrum_NestingTurtle_MBIO612.csv"))
+
+#inspect the data
+#glimpse(df)
+
+#prepare the data set
+clean_df <- df %>%
+  filter(track_type == "nesting") %>%   #use only nesting data
+  group_by(beach, species_id) %>%       #group by beach name and species name
+  summarise(total_nests = n()) %>%      #calculate the amount 
+  ungroup()
+
+#create the plot
+ggplot(clean_df,                       #create ggplot use data clean_df 
+       aes(x = beach,                  #assign x axis with beach name
+           y = total_nests,            #assign y axis with total nest summarised in clean_df
+           fill = species_id)) +       #assign different color to represent each species
+  geom_bar(stat = "identity", position = "dodge") +   #bar plot with bars side by side (dodge) each species
+  labs(x = "",            #no label in x axis
+       y = "Total Nests", #label in y axis
+       caption = "Figure 2. Sea turtles nest distribution by villages in Buru Island in January 2022 (source : fake data)") +  #adding caption
+  scale_fill_manual(
+    name = "Species",    #rename the legend title
+    values = c("gt" = "darkolivegreen", "or" = "darkgoldenrod4", "lt" = "dimgrey"),  # Specify colors
+    labels = c("gt" = "Chelonia mydas", "or" = "Lepidochelys olivacea", "lt" = "Dermochelys coriacea") #rename each labels
+  ) +
+  theme_bw() +   #using theme_bw as background template
+  theme(
+    plot.caption = element_text(hjust = 0.5, size = 14),  # Center align caption and set size
+    axis.title = element_text(size = 14),   # set axis title size
+    axis.text = element_text(size = 12),    # set axis text size
+    legend.title = element_text(size = 14), # set legend title size
+    legend.text = element_text(size = 12)   # set legend text size
+  )
+
+
+```
+Overall, the turtles distribution among three villages is similar. The olive ridley (*Lepodochelys olivacea*) seems to be the majority of turtles that nest in three beaches. Followed by green turtles (*Chelonia mydas*) and the least turtle nests found is the leatherback turtles (*Dermochelys coriacea*). Fun fact about turtles, turtles often return to the same beach where they were born to nest. Consequently, with a long-term dataset, we can estimate the population of female sea turtles in this region. 
+
+## Sea Turtle Clutch Size
+```{r }
+
+df %>%
+  filter(!is.na(species_id)) %>%    # Remove rows with NA in species_id
+  mutate(species = case_when(       # Rename species_id values
+    species_id == "gt" ~ "green turtle",
+    species_id == "lt" ~ "leatherback turtle",
+    species_id == "or" ~ "olive ridley",
+    TRUE ~ species_id               # Keeps the original value if not matched
+  )) %>%
+  group_by(species, beach) %>%                        # Group by the new species and beach
+  summarise(clutch_size = mean(eggs, na.rm = TRUE),   # Calculate the mean clutch size
+            SE = sd(eggs, na.rm = TRUE)/sqrt(n()),    # Calculate the SE clutch size
+            .groups = 'drop') %>%
+  # Create the kable table
+  kbl(caption = "table.1 sea turtles mean clutch size and standard error by beach ") %>%
+  kable_classic() %>%                   # use the classic theme 
+  kable_styling(full_width = FALSE)     # FALSE if you want the table not too wide
+
+```
+By analyzing the dataset from January 2022, we estimated the clutch size (total number of eggs in each nest) for each species. Leatherback turtles exhibited the largest clutch size, averaging 78.7 eggs (SE = 5.2), while green turtles had the smallest average clutch size at 56.6 eggs (SE = 1.5). Olive ridley turtles had a clutch size nearly equivalent to that of green turtles, with an average of 57 eggs (SE = 1.9) (Table 1).
+
+## Sea turtles Carapace width and Carapace length 
+```{r carapace_correlation, fig.width= 12, fig.height=6, fig.align= 'center'}
+
+ggplot(df, aes(x = ccl, y = ccw, color = species_id)) +
+  geom_smooth(method = "lm") +
+  labs( x = "carapace length",
+        y = "carapace width",
+        caption = "Figure 3. The correlation between carapace width and carapace length of sea turtles (source: fake data)") +
+  scale_color_manual(
+    name = "Species",
+    values = c("gt" = "darkolivegreen", "lt" = "dimgrey", "or" = "darkgoldenrod4"),  # Specify colors for each species
+    labels = c("gt" = "Green Turtle", "lt" = "Leatherback Turtle", "or" = "Olive Ridley")
+  ) +
+  theme_bw() +
+  theme(
+    plot.caption = element_text(hjust = 0.5, size = 14),  # Center align caption and increase size
+    axis.title = element_text(size = 14),  # Increase axis title size
+    axis.text = element_text(size = 12),   # Increase axis text size
+    legend.title = element_text(size = 14), # Increase legend title size
+    legend.text = element_text(size = 12)   # Increase legend text size
+)
+  
+
+  
+```
+Based on the data, all sea turtle species exhibited a similar correlation, where an increase in carapace length is associated with a larger carapace width. Overall, leatherback turtles have the largest carapace size, followed by green turtles, while olive ridley turtles have the smallest.
+
+
+# Conclusions
+This Rmarkdown document presents an analysis of a __fake dataset__ about sea turtle nesting sites, focusing on three species: leatherback turtles (*Dermochelys coriacea*), green turtles (*Chelonia mydas*), and olive ridley turtles (*Lepidochelys olivacea*). The findings indicate that olive ridley turtles are the most prevalent nesters across the studied beaches, followed by green turtles, with leatherbacks being the least common. The clutch size analysis reveals that leatherback turtles have the largest average clutch size, while green turtles exhibit the smallest. Additionally, a correlation analysis shows that an increase in carapace length corresponds to a larger carapace width across all species, with leatherback turtles having the largest dimensions.
+
