@@ -1,13 +1,15 @@
 ---
 title: "Homework MBIO 612"
-subtitle: "Rmarkdown"
 author: "Retno K. Ningrum"
 date: "2024-10-08"
-output: 
- html_document:
-    toc: TRUE       #if you want to create a table of content
-    toc_float: TRUE #the style how you want to show the table of content
-    theme: paper   #using the theme, you can explore more in the global options 
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: paper
+  pdf_document:
+    toc: true
+subtitle: Rmarkdown
 ---
 
 ```{r setup, include=FALSE}
