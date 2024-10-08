@@ -1,0 +1,42 @@
+---
+title: "R Markdown Tutorial"
+author: "Retno K. Ningrum"
+date: "2024-10-01"
+output: html_document
+---
+
+# Header 
+** love ** bold
+* love * italic
+two spaces then enter will give u a new line   
+
+### lists
+- item 1
+- item 2
+- item 3
+
+### images 
+![UH Logo](add the link of the images here)
+
+### links  
+do the same thing but without ![  ]
+
+### code chunk
+```{r, include = FALSE}
+#prevent the summary at the output
+```
+
+```{r, warning= FALSE}
+#not showing the warning
+```
+
+```{r, echo= FALSE}
+#prevent code but showing the result
+```
+
+if you want to multiple, then you can use the knit chunk
+```{r, include= FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = TRUE)
+```
+
