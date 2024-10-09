@@ -1,0 +1,167 @@
+---
+title: "Mapping in R"
+author: "Retno K. Ningrum"
+date: "2024-10-08"
+output: html_document
+---
+
+
+### Load libraries
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(here)
+library(maps)
+library(mapdata)
+library(mapproj)
+
+
+```
+
+### Load the data
+```{r}
+popdata <- read_csv(here("week7", "week7_class", "data", "CApopdata.csv"))
+stars <- read_csv(here("week7", "week7_class", "data", "stars.csv"))
+```
+
+### review the data
+```{r}
+glimpse(popdata)
+glimpse(stars)
+```
+
+### intro to maps package
+##note : this is very USA based centric
+```{r}
+#get data for the entire world
+world <- map_data("world")
+head(world)
+
+#get data of those in USA
+usa <- map_data("usa")
+head(usa)
+
+#get data of those county in USA
+counties <- map_data("county")
+head(counties)
+
+#get data on states in USA
+states <- map_data("state")
+head(states)
+
+#plot the map 
+ggplot() +
+  geom_polygon(data = world, 
+               aes(x = long, 
+                   y = lat, 
+                   group = group,     #"group" is a column in the data set, its a must.
+                   fill = region),    #fill by region
+                   color = "black") + #boundaries of region
+  guides(fill = FALSE) +
+  theme_minimal()
+```
+
+```{r}
+#plot the map 
+ggplot() +
+  geom_polygon(data = world, 
+               aes(x = long, 
+                   y = lat, 
+                   group = group,     #"group" is a column in the data set, its a must.
+                   fill = region),    #fill by region
+                   color = "black") + #boundaries of region
+  guides(fill = FALSE) 
+###lanjut, cek di slides
+```
+
+### California map
+```{r}
+head(states)
+
+#filter out the unused data
+CA_data <- states %>%
+  filter(region == "california")
+
+#plot california
+ggplot() +
+   geom_polygon(data = CA_data, 
+               aes(x = long, 
+                   y = lat, 
+                   group = group,     #"group" is a column in the data set, its a must.
+                   fill = region),    #fill by region
+                   color = "black") + #boundaries of region
+  guides(fill = FALSE)+
+   coord_map(projection = "mercator",
+            xlim = c(-110,-125))
+
+```
+## Add data into a map
+```{r}
+### need to join the data of popdata 
+
+#look at the data
+head(popdata)
+head(counties)
+#here the region is similar to subregion, we need to rename to use join features
+
+CApop_county <- popdata %>%
+  select("subregion" = County, Population) %>% #rename the county name inro subregion
+  inner_join(counties) %>%                     #join data with counties df
+  filter(region == "california")               #choose only california
+
+#now lets make a plot!
+ggplot() +
+   geom_polygon(data = CApop_county, 
+               aes(x = long, 
+                   y = lat, 
+                   group = group,     #"group" is a column in the data set, its a must.
+                   fill = Population),    #fill by region
+                   color = "black") + #boundaries of region
+     coord_map(projection = "mercator",
+            xlim = c(-110,-125)) 
+
+#using log transform to adjust the pop and visualisation
+ggplot() +
+   geom_polygon(data = CApop_county, 
+               aes(x = long, 
+                   y = lat, 
+                   group = group,     #"group" is a column in the data set, its a must.
+                   fill = Population),    #fill by region
+                   color = "black") + #boundaries of region
+     coord_map(projection = "mercator",
+            xlim = c(-110,-125)) +
+  scale_fill_gradient(trans = "log10") #this is because too many people, so we logtransform the data
+
+```
+
+### Adding stars dataset as the geom point
+```{r}
+#using log transform to adjust the pop and visualisation
+ggplot() +
+   geom_polygon(data = CApop_county, 
+               aes(x = long, 
+                   y = lat, 
+                   group = group,         #"group" is a column in the data set, its a must.
+                   fill = Population),    #fill by region
+                   color = "black") +     #boundaries of region
+  geom_point(data = stars,
+              aes(x= long, 
+                  y = lat,
+                  size = star_no))+
+     coord_map(projection = "mercator",
+            xlim = c(-110,-125)) +
+  scale_fill_gradient(trans = "log10") + #this is because too many people, so we logtransform the data
+  labs(size = "#stars/me")
+ggsave(here("Week7", "week7_class", "output","CApop.pdf"))
+  
+
+```
+## new fun code
+```{r}
+library(ggdogs)
+ggplot(mtcars) +
+  geom_dog(aes(mpg, wt), dog = "pug", size = 5)
+```
+
+
