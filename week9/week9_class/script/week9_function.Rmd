@@ -1,0 +1,172 @@
+---
+title: "Week9_functions"
+author: "Retno K. Ningrum"
+date: "2024-10-22"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+
+# draw random value
+df <- tibble(
+  a = rnorm(10),
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10)
+)
+
+df
+
+# reshape data
+x <- df %>%
+  mutate(a = (a-min(a, na.rm = TRUE))/(max(a, na.rm = TRUE)-min(a, na.rm = TRUE)),
+  mutate(b = (b-min(b, na.rm = TRUE))/(max(b, na.rm = TRUE)-min(b, na.rm = TRUE)),
+  mutate(c = (c-min(c, na.rm = TRUE))/(max(c, na.rm = TRUE)-min(c, na.rm = TRUE)),
+  mutate(d = (d-min(d, na.rm = TRUE))/(max(d, na.rm = TRUE)-min(d, na.rm = TRUE))
+#this is too much work
+
+#we can write with function
+rescale01 <- function(x) {
+  value <- (x-min(x, na.rm = TRUE))/(max(x, na.rm = TRUE)- min(x, na.rm = TRUE))
+  return(value)
+}
+
+#then add the function to the equation
+df %>%
+  mutate(a = rescale01(a),
+         b = rescale01(b),
+         c = rescale01(c),
+         d = rescale01(d))
+
+
+```
+
+### make a function to convert degree to farenheit
+```{r}
+
+fahrenheit_to_celsius <- function(temp_F) {
+  temp_C <- (temp_F - 32) * 5 / 9 
+  return(temp_C)
+}
+
+farenheit_to_celcious(32)
+
+```
+
+
+
+### try
+```{r}
+library(palmerpenguins)
+library(PNWColors)
+
+# create a pallate
+pal <- pnw_palette("Lake", 3, type = "discrete") #my color pallete, pick only 3 color from this group
+
+ggplot(penguins, aes(x= body_mass_g, y= bill_length_mm, color = island))+
+  geom_point() +
+  geom_smooth(method = "lm") +
+  scale_color_manual("Island", values = pal) +
+  theme_bw()
+
+#making plots into a function
+myplot <- function(data, x, y) {
+  pal <- pnw_palette("Lake", 3, type = "discrete") 
+  
+ggplot(penguins, aes(x= x, y= y, color = island))+
+  geom_point() +
+  geom_smooth(method = "lm") +
+  scale_color_manual("Island", values = pal) +
+  theme_bw()
+}
+
+myplot(data = penguins, x=body_mass_g, y = bill_length_mm)
+#not working, refine the function!
+
+myplot <- function(data, x, y) {
+  pal <- pnw_palette("Lake", 3, type = "discrete") 
+  
+ggplot(penguins, aes(x= {{x}}, y= {{y}}, color = island))+   ##tambahin bracket di x and y
+  geom_point() +
+  geom_smooth(method = "lm") +
+  scale_color_manual("Island", values = pal) +
+  theme_bw()
+}
+
+myplot(data = penguins, x=body_mass_g, y = bill_length_mm)
+#now its working!
+
+#then you can use this function easily using any other dataset
+myplot(data = penguins, x=body_mass_g, y= flipper_length_mm)
+
+#make it even shirther if you belief that you would always use penguin dataset
+#you can use "default"
+myplot <- function(data = penguins, x, y) {
+  pal <- pnw_palette("Lake", 3, type = "discrete") 
+  
+ggplot(penguins, aes(x= {{x}}, y= {{y}}, color = island))+   ##tambahin bracket di x and y
+  geom_point() +
+  geom_smooth(method = "lm") +
+  scale_color_manual("Island", values = pal) +
+  theme_bw()
+}
+
+myplot(x=body_mass_g, y= flipper_length_mm)
+
+##adding labels to modify
+myplot(data = penguins, x=body_mass_g, y= flipper_length_mm) +
+  labs(x = "Body mass (g)",
+       y = "Flipper Length (mm)")
+
+```
+
+### IF ELSE STATEMENT 
+```{r}
+
+a <- 4
+b <- 5
+
+if (a>b) {
+  f <- 20 
+} else{
+  f <- 10
+}
+
+f #is 10, why ??
+
+```
+## try in plot function
+```{r}
+myplot<-function(data = penguins, x, y, lines=TRUE ){ # add new argument for lines
+pal<-pnw_palette("Lake",3, type = "discrete") # my color palette 
+if(lines==TRUE){
+ggplot(data, aes(x = {{x}}, y = {{y}} , color = island))+
+  geom_point()+
+  geom_smooth(method = "lm")+ # add a linear model
+  scale_color_manual("Island", values=pal)+   # use pretty colors and change the legend title
+  theme_bw()
+}
+else{
+ggplot(data, aes(x = {{x}}, y = {{y}} , color = island))+
+  geom_point()+
+  scale_color_manual("Island", values=pal)+   # use pretty colors and change the legend title
+  theme_bw()
+}
+}
+
+myplot(x=body_mass_g, y= flipper_length_mm)
+
+#versus
+
+myplot(x=body_mass_g, y= flipper_length_mm, lines = FALSE)
+
+```
+## BONUS : AWESOME PACKAGE 
+```{r}
+devtools::install_github("itsrainingdata/emokid")
+library(emokid)
+iamsad()
+
+```
+

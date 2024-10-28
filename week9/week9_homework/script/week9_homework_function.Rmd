@@ -1,0 +1,91 @@
+---
+title: "Homework"
+author: "Retno K. Ningrum"
+date: "2024-10-23"
+output: html_document
+---
+
+
+## Intall all libraries
+```{r}
+library(ggplot2)
+library(palmerpenguins)
+library(dplyr)
+
+library(tidyverse)
+library(hrbrthemes)
+library(viridis)
+```
+
+## view the data
+```{r}
+glimpse(iris) #I use iris data from R
+
+```
+## Create a function without plot
+Here, I will try to make a function that summarize data: mean, median, min, and max
+```{r}
+#create the function to calculate mean, median min, and max
+basic_stat <- function(x) {         #calling the function "x"
+  result <- data.frame(             #to create a data frame
+  mean = mean(x, na.rm = TRUE),     #assign the function to calculate mean in "x", delete all NA
+  median = median(x, na.rm = TRUE), #assign the function to calculate median in "x", delete all NA
+  min = min(x, na.rm = TRUE),       #assign the function to calculate min in "x", delete all NA
+  max = max(x, na.rm = TRUE)        #assign the function to calculate max in "x", delete all NA
+  )
+  return(result)                    #specify in returning the result data frame function
+}
+
+#try to calculate basic stats for bill depth length
+print(basic_stat(iris$Sepal.Length))  
+#try to calculate basic stats for bill length
+print(basic_stat(iris$Sepal.Width))
+
+
+#What if I only want to know the Setosa?
+#filter the data set to setosa only
+setosa<- iris %>%
+  filter(Species == "setosa")
+
+#print calculation of setosa width
+print(basic_stat(setosa$Sepal.Width))
+#print calculation of setosa length
+print(basic_stat(setosa$Petal.Length))
+```
+## Create a function with a plot
+```{r}
+boxplot_RN <- function(data, x, y, z) {
+  #create plot_title function, to adjust the plot's title on each dataset
+  plot_title <- paste("Boxplot of",              #use the "Boxplot of" as a template of title
+                      deparse(substitute(data))) #then continue the name based on the dataset used
+  
+  #create the plot
+  ggplot(data, aes(x= {{x}},        #assign x axis based on "x" column
+                   y= {{y}},        #assign y axis based on "y" column
+                   fill = {{z}}))+  #assign the color based on "z" column
+  geom_boxplot() +                  #use geom boxplot
+  scale_fill_viridis(discrete = TRUE, #use color based on scale_fill_viridis pallete
+                     alpha = 0.5) +   #set the transparency of boxplot
+    geom_jitter(color = "black",    #add the data point
+                size = 0.4) +       #set the size of data point
+    theme_bw() +                    #use theme_bw() for the frame theme
+    theme( 
+      legend.position = "right",            #place the legend on the right side of figures
+      plot.title = element_text(size = 12,  #assign the plot title size 
+        face = "bold",                      #Makes the title bold
+        hjust = 0.5)                        #Centers the title
+    ) +
+    ggtitle(plot_title)    #assign the title based on the plot_title function created earlier
+}
+
+## Now try use the function to iris dataset
+boxplot_RN(iris, Sepal.Width, Sepal.Length, Species)+
+  xlab("Sepal Width") +
+  ylab("Sepal Length")
+
+## Now try use the function to palmerpenguin dataset
+boxplot_RN(penguins, bill_length_mm, body_mass_g, species) +
+  xlab("Bill Length") +
+  ylab("Body Mass (gr)")
+
+```
