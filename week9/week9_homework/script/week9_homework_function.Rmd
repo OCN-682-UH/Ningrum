@@ -11,7 +11,6 @@ output: html_document
 library(ggplot2)
 library(palmerpenguins)
 library(dplyr)
-
 library(tidyverse)
 library(hrbrthemes)
 library(viridis)
