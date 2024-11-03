@@ -2,7 +2,7 @@
 title: "Good Plot, Bad Plot"
 author: "Retno K. Ningrum"
 date: "2024-10-29"
-output: github_document
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
