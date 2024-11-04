@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE,                  #display the code
                       fig.path = "../output/")      #set the output for image
 ```
 
-##Load all Libraries
+## Load all Libraries
 ```{r}
 library(dplyr)
 library(ggplot2)
@@ -20,7 +20,7 @@ library(gganimate)
 library(extrafont)
 ```
 
-##Read and View Data
+## Read and View Data
 ```{r}
 df <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-11-05/democracy_data.csv')
 
@@ -30,10 +30,9 @@ glimpse(df) #check dataset type
 #I am interested to several variables, so I want to check the category of each variable of interest with unique() function. 
 unique(df$electoral_category) 
 unique(df$election_year)
-unique(df$country_name)
 unique(df$is_democracy)
 ```
-##Data Cleaning and Manipulation  
+## Data Cleaning and Manipulation  
   
 After looking the data and find my interest, I am deciding to create a plot that showing the gender representation trends in the world presidency overtime. Also comparing the trend between democracy elected versus non-democracy elected. Therefore, several data cleaning and manipulation should be done :  
 1. select only the variable of interest  
@@ -61,7 +60,7 @@ df_gender <- df %>%                                               #create datase
 
 ```
 
-##Creating Plot  
+## Creating Plot  
   
 Once I clean the data, its time for me to create the plot. My plan is to make a moving plot, where the transition is based on year. 
 ```{r Plot_name, fig.width= 7, fig.height=5, fig.align= 'center'}
