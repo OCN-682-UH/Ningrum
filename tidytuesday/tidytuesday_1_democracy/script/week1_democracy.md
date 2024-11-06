@@ -1,4 +1,4 @@
-Tidy Tuesday 1
+Tidy Tuesday : Democracy Data
 ================
 Retno K. Ningrum
 2024-11-03
@@ -155,4 +155,4 @@ ggplot(df_gender,                         #use ggplot from df_gender dataset
   ease_aes('sine-in-out')   #choose this type of animation of transition
 ```
 
-<img src="../output/Plot_name-1.gif" style="display: block; margin: auto;" />
+<img src="../output/presidency_by_gender-1.gif" style="display: block; margin: auto;" />

@@ -1,5 +1,5 @@
 ---
-title: "Tidy Tuesday 1"
+title: "Tidy Tuesday : Democracy Data"
 author: "Retno K. Ningrum"
 date: "2024-11-03"
 output: github_document
@@ -17,7 +17,6 @@ knitr::opts_chunk$set(echo = TRUE,                  #display the code
 library(dplyr)
 library(ggplot2)
 library(gganimate)
-library(extrafont)
 ```
 
 ## Read and View Data
@@ -63,7 +62,7 @@ df_gender <- df %>%                                               #create datase
 ## Creating Plot  
   
 Once I clean the data, its time for me to create the plot. My plan is to make a moving plot, where the transition is based on year. 
-```{r Plot_name, fig.width= 7, fig.height=5, fig.align= 'center'}
+```{r presidency_by_gender, fig.width= 7, fig.height=5, fig.align= 'center'}
 
 ggplot(df_gender,                         #use ggplot from df_gender dataset
        aes(x = is_female_president,       #assign x axis with is_female_president
