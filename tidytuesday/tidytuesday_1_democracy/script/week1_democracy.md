@@ -9,7 +9,6 @@ Retno K. Ningrum
 library(dplyr)
 library(ggplot2)
 library(gganimate)
-library(extrafont)
 ```
 
 ## Read and View Data
@@ -156,3 +155,9 @@ ggplot(df_gender,                         #use ggplot from df_gender dataset
 ```
 
 <img src="../output/presidency_by_gender-1.gif" style="display: block; margin: auto;" />
+
+## Something New I learn :
+
+1.  level() function to arrange the naming of variable in the
+    visualization output
+2.  using gganimate for bar chart

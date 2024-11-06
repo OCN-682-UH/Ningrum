@@ -90,3 +90,7 @@ ggplot(df_gender,                         #use ggplot from df_gender dataset
 ```
 
 
+## Something New I learn :  
+1. level() function to arrange the naming of variable in the visualization output
+2. using gganimate for bar chart
+
