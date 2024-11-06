@@ -1,0 +1,93 @@
+---
+title: "Tidy Tuesday 1"
+author: "Retno K. Ningrum"
+date: "2024-11-03"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,                  #display the code
+                      message = FALSE,              #do not show the message
+                      warning = FALSE,              #do not show the warning
+                      fig.path = "../output/")      #set the output for image
+```
+
+## Load all Libraries
+```{r}
+library(dplyr)
+library(ggplot2)
+library(gganimate)
+library(extrafont)
+```
+
+## Read and View Data
+```{r}
+df <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-11-05/democracy_data.csv')
+
+View(df)    #view all the data
+glimpse(df) #check dataset type
+
+#I am interested to several variables, so I want to check the category of each variable of interest with unique() function. 
+unique(df$electoral_category) 
+unique(df$election_year)
+unique(df$is_democracy)
+```
+## Data Cleaning and Manipulation  
+  
+After looking the data and find my interest, I am deciding to create a plot that showing the gender representation trends in the world presidency overtime. Also comparing the trend between democracy elected versus non-democracy elected. Therefore, several data cleaning and manipulation should be done :  
+1. select only the variable of interest  
+2. rename the category of each variable: gender and democracy
+
+```{r}
+#Data Cleaning and Manipulation
+df_gender <- df %>%                                               #create dataset by using "df" data
+  select(country_name, is_female_president, year, is_democracy) %>% #select these variables
+  group_by(year, is_female_president, is_democracy) %>%           #group by these variables
+  summarise(total = n()) %>%                  #create new variables "total" and summarize data found
+  ungroup() %>%                               #always do this after grouping
+   mutate(is_female_president = case_when(    #rename the category in the "is_female_president"
+    is_female_president == FALSE ~ "Male",    #where FALSE into Male
+    is_female_president == TRUE ~ "Female",   #where TRUE into Female
+    is.na(is_female_president) ~ "Unknown"    #where NA into Unknown
+  )) %>%
+    mutate(is_female_president = factor(    
+      is_female_president,                          #factorize the category as I want to use levels
+      levels = c("Female", "Male", "Unknown"))) %>% #level the category, as I want female come first
+    mutate( is_democracy = case_when(                #rename the category in is_democracy
+    is_democracy == FALSE ~ "Non-Democracy Elected", #where FALSE into non-democracy elected
+    is_democracy == TRUE ~ "Democracy Elected")) %>% #where TRUE into democracy elected
+  filter(!is.na(is_democracy))                #delete NA in is_democracy
+
+```
+
+## Creating Plot  
+  
+Once I clean the data, its time for me to create the plot. My plan is to make a moving plot, where the transition is based on year. 
+```{r Plot_name, fig.width= 7, fig.height=5, fig.align= 'center'}
+
+ggplot(df_gender,                         #use ggplot from df_gender dataset
+       aes(x = is_female_president,       #assign x axis with is_female_president
+           y = total,                     #assigyn y axis with total
+           fill = is_female_president)) + #assign the fil is_female_president, dealing with color 
+  geom_bar(stat='identity') +    #add geom bar
+  facet_wrap(~ is_democracy) +   #facet wrap by is_democracy
+  scale_fill_manual( values =                      #Assign colors in fill
+                       c("Male" = "#0072B2",       #male is blue
+                         "Female" = "#CC79A7",     #female is pink
+                         "Unknown" = "#999999")) + #unknown is grey
+    labs(x = "",y = "Total",                                           #add label in y axis
+    title = "World Presidency: Gender Representation Trends Over Time",#add title
+    subtitle = "Year: {round(frame_time)}",                      #add subtitle, and round the year
+    caption = "source: Bjørnskov, C., & Rode, M. (2020)") +      #add caption of source
+  theme_minimal() +                                                   #use this theme type
+  theme(
+    plot.title = element_text(size = 16, face = "bold", hjust = 0.5), #setting the size, location of title
+    plot.subtitle = element_text(size = 12, hjust = 0.5),  #setting the size, location of subtitle
+    plot.caption = element_text(size = 12, hjust = 1),   #setting the size, location of caption
+    legend.position = "none") +                 #do not add any legend, as color in bar is obvious
+  transition_time(year) +   #add transition by year
+  ease_aes('sine-in-out')   #choose this type of animation of transition
+
+```
+
+
