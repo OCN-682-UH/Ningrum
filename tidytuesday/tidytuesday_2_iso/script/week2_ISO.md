@@ -91,7 +91,7 @@ quick_map(all_countries,       #create map, using all_countries data
        fill = "Total                                       
 Subdivision") +
   theme(plot.title = element_text(size = 14,                #set the font size of the title
-                                  hjust = 1,              #set the position of title
+                                  hjust = 0.5,                #set the position of title
                                   face = "bold",            #set title into bold
                                   margin = margin(b = 20)), #set margin between title and map
         plot.caption = element_text(size = 10)) +   #add caption, set size
