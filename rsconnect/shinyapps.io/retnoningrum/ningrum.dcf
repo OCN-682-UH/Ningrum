@@ -5,6 +5,6 @@ account: retnoningrum
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 13388966
-bundleId: 9387227
+bundleId: 9387373
 url: https://retnoningrum.shinyapps.io/ningrum/
 version: 1
