@@ -2,11 +2,10 @@
 library(shiny)    #for using shiny  
 library(ggplot2)  #I'll use ggplot to visualize my data
 library(dplyr)    #to manipulate my data
-library(here)     #using here function to call my data
 library(tidyverse)#to tidy my data
-library(rsconnect)
+library(rsconnect)#to deploy my app 
 
-#load data with here() function
+#load data
 data <- read_csv("monthlydata.csv")
 
 #creating the User Interface (UI) ~ what your app should looks like
