@@ -93,10 +93,10 @@ ratio <- episode_metrics %>%  #use this data
   scale_fill_manual(
     values = c("question" = "palegreen1",  #set the color in question_color
                "exclamation" = "yellow3"), #set the color in exclamation_color
-    name = "Type") +                             #assign these as "type" 
+    name = "") +                          #not adding any title on the fill (not necessary) 
   #assign the wording for title and x/y axis
   labs(
-    title = "The Ratio of Question and Exclamation Type of Conversation",  #set the title
+    title = "The Ratio of Question and Exclamation",  #set the title
     x = "ratio") +                                                         #set the x axis
   #use theme_minimal() as the type of the plot
   theme_minimal() +
