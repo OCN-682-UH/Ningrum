@@ -11,6 +11,7 @@ library(gridExtra)  #to combine 2 plot in one frame
 library(viridis)    #color choice pallate
 library(hrbrthemes) #theme I used to create the plot
 library(ggridges)   #to create the ridge plot
+library(grid)       #to add annotation
 ```
 
 Read the data
@@ -103,12 +104,26 @@ ratio <- episode_metrics %>%  #use this data
                               margin = margin(b=20)),#add margin between title to plot
      axis.title.y = element_blank())                 #do not add any words in y axis
 
-grid.arrange(unique_words, ratio, nrow = 1)   #set the result frame, unique words on left, ratio on right, number of row is 1. 
+#now is to create annotation (the source of the data)
+source_text <- textGrob(
+  "Source: Data Science Learning Community (2024). Tidy Tuesday: A weekly social data project. https://tidytues.day", 
+  gp = gpar(fontsize = 10, fontface = "italic"),  #Adjust Font size and style
+  hjust = 0.5,                                    #Center the text horizontally
+  x = 0.5                                         #Position it in the center
+)
+
+#now arrange all the plots
+grid.arrange(
+  #set up layout, first row
+  arrangeGrob(unique_words, ratio, nrow = 1),#unique_words plot on left, ratio on right, in one row 
+  source_text,                               #add source_text in the second row
+  nrow = 2,                                  #set up total row 2 
+  heights = c(10,1))                         #adjust heights in first main row 10, and second row is 1
 ```
 
-<img src="../output/unnamed-chunk-4-1.png" style="display: block; margin: auto;" />
+<img src="../output/words_bobsburger-1.png" style="display: block; margin: auto;" />
 
-### Something New I learnt :
+### Few things I learned :
 
 1.  The data has very disturbing outlier, and there is a way to remove
     the outlier by using outlier.shape = NA in the geom_boxplot(). I
@@ -118,4 +133,5 @@ grid.arrange(unique_words, ratio, nrow = 1)   #set the result frame, unique word
     of x. For the visualization purposes, I learn new code to set the x
     limit by using xlim()  
 3.  First time also use the ggridges package, and learned how to create
-    a ridges histogram and overlap more than one data into one plot.
+    a ridges histogram and overlap more than one data into one plot.  
+4.  First time also use text_Grob()

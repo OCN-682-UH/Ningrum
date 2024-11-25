@@ -19,6 +19,7 @@ library(gridExtra)  #to combine 2 plot in one frame
 library(viridis)    #color choice pallate
 library(hrbrthemes) #theme I used to create the plot
 library(ggridges)   #to create the ridge plot
+library(grid)       #to add annotation
 ```
 Read the data
 ```{r}
@@ -37,7 +38,7 @@ episode_metrics$season <- factor(episode_metrics$season, levels = c("season 1", 
 ```
 
 Looking at the data, I want to create two plots and present those two plots into one output figures using new package **GridExtra()**
-```{r, fig.width= 12, fig.height= 4, fig.align='center'}
+```{r words_bobsburger, fig.width= 12, fig.height= 4, fig.align='center'}
 
 #create the plot
 unique_words <- episode_metrics %>%       #use data in episode_metrics
@@ -107,10 +108,25 @@ ratio <- episode_metrics %>%  #use this data
                               margin = margin(b=20)),#add margin between title to plot
      axis.title.y = element_blank())                 #do not add any words in y axis
 
-grid.arrange(unique_words, ratio, nrow = 1)   #set the result frame, unique words on left, ratio on right, number of row is 1. 
+#now is to create annotation (the source of the data)
+source_text <- textGrob(
+  "Source: Data Science Learning Community (2024). Tidy Tuesday: A weekly social data project. https://tidytues.day", 
+  gp = gpar(fontsize = 10, fontface = "italic"),  #Adjust Font size and style
+  hjust = 0.5,                                    #Center the text horizontally
+  x = 0.5                                         #Position it in the center
+)
+
+#now arrange all the plots
+grid.arrange(
+  #set up layout, first row
+  arrangeGrob(unique_words, ratio, nrow = 1),#unique_words plot on left, ratio on right, in one row 
+  source_text,                               #add source_text in the second row
+  nrow = 2,                                  #set up total row 2 
+  heights = c(10,1))                         #adjust heights in first main row 10, and second row is 1
 ```
 
-### Something New I learnt :   
+### Few things I learned :   
 1. The data has very disturbing outlier, and there is a way to remove the outlier by using outlier.shape = NA in the geom_boxplot(). I remove outlier for the visualization purposes, and I consider the outlier data is not very important.  
 2. Because the outlier, there is a huge empty space on the higher value of x. For the visualization purposes, I learn new code to set the x limit by using xlim()  
-3. First time also use the ggridges package, and learned how to create a ridges histogram and overlap more than one data into one plot. 
+3. First time also use the ggridges package, and learned how to create a ridges histogram and overlap more than one data into one plot.  
+4. First time also use text_Grob()
