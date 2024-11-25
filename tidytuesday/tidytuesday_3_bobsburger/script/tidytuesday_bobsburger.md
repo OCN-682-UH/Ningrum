@@ -73,7 +73,7 @@ ratio <- episode_metrics %>%  #use this data
   geom_density_ridges(
     aes(x = question_ratio,        #assign x is the question_ratio
         y = season,                #assign y is the season
-        fill = "question_color"),  #set the color as "question_color" pallete 
+        fill = "question"),  #set the color as "question_color" pallete 
     alpha = 0.5,                   #set the transparency, because data might overlap
     scale = 3                      #set the scale of ridges
   ) +
@@ -81,14 +81,14 @@ ratio <- episode_metrics %>%  #use this data
   geom_density_ridges(
     aes(x = exclamation_ratio,       #assign x is exclamation_ratio
         y = season,                  #assign y is season
-        fill = "exclamation_color"), #set the color as "exclamation_color"
+        fill = "exclamation"), #set the color as "exclamation_color"
     alpha = 0.5,                     #set the transparency
     scale = 3                        #set the scale of ridges
   ) +
   #now assign the color manually
   scale_fill_manual(
-    values = c("question_color" = "palegreen1",  #set the color in question_color
-               "exclamation_color" = "yellow3"), #set the color in exclamation_color
+    values = c("question" = "palegreen1",  #set the color in question_color
+               "exclamation" = "yellow3"), #set the color in exclamation_color
     name = "Type") +                             #assign these as "type" 
   #assign the wording for title and x/y axis
   labs(
