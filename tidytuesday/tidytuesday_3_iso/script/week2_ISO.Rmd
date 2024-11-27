@@ -1,0 +1,80 @@
+---
+title: 'Tidy Tuesday : ISO'
+author: "Retno K. Ningrum"
+date: "2024-11-11"
+output: github_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,                  #display the code
+                      message = FALSE,              #do not show the message
+                      warning = FALSE,              #do not show the warning
+                      fig.path = "../output/")      #set the output for image
+```
+
+## Load all Libraries
+```{r}
+library(countries)
+library(dplyr)
+library(ggplot2)
+
+```
+
+## Read Data and Check Data
+```{r}
+
+#Read the data
+countries <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-11-12/countries.csv')
+country_subdivisions <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-11-12/country_subdivisions.csv')
+former_countries <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-11-12/former_countries.csv')
+
+
+#Check the data
+glimpse(countries)
+glimpse(country_subdivisions)
+glimpse(former_countries)
+
+```
+
+## Data Manipulation
+After check the data, I decide to just use the Countries and Country_subdivision data to visualize the total subdivision of each country in the world.
+```{r}
+# Join countries and country_subdivisions
+all_countries <- full_join(countries,              #join countries and country_subdivision dataset
+                           country_subdivisions, 
+                           by = "alpha_2") %>%     #using alpha_2 as the reference to join the dataset
+  group_by(name.x, alpha_3) %>%                    #group by name.x (name country) and alpha_3
+  summarise(total = n())                           #create new column to store the total row found
+
+```
+## Create the Map
+I will try new package {countries} and use the quick_map() function to generate the map of total subdivision each country in the world
+```{r Map_Subdivision, fig.width= 12, fig.height=5, fig.align= 'center'}
+# Create the map
+quick_map(all_countries,       #create map, using all_countries data
+          plot_col = "total",  #use the value in "total" column 
+          theme = 9) +         #choose viridis color to fill the map, represent total value
+  coord_map("mercator",          #choose the mercator type projection  
+            xlim = c(-180, 180), #set the xlim
+            ylim = c(-60, 80)) + #set the ylim
+  labs(title = "Total of Country Subdivision in the World",   #add title
+       caption = "Source: Data Science Learning Community (2024). Tidy Tuesday: A weekly social data project. https://tidytues.day", #add caption
+       fill = "Total                                       
+Subdivision") +
+  theme(plot.title = element_text(size = 14,                #set the font size of the title
+                                  hjust = 0.5,                #set the position of title
+                                  face = "bold",            #set title into bold
+                                  margin = margin(b = 20)), #set margin between title and map
+        plot.caption = element_text(size = 8,
+                                    hjust = 0.5)) +   #add caption, set size
+   theme(legend.position = "right",                #Move legend to the right
+         legend.title = element_text(size = 10),    #set the size of legend title
+         legend.text = element_text(size = 10))     #set the size of legend text
+
+```
+
+## New things I learned:  
+1. quick_map() function. This is the first time I try quick_map to create a map. The data needed to create map is only the country's name and the value on each country.  
+2. Margin in theme(). This is the first time I use margin, which allow me to set the distance between plot title to the plot/map. 
+

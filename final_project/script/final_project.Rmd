@@ -1,0 +1,217 @@
+---
+title: "Leatherback Turtle Conservation Project on Buru Island, Indonesia"
+author: "Retno K. Ningrum"
+date: "2024-11-22"
+output: 
+  html_document : 
+    toc : true
+    toc_float: true
+    theme: paper
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,                  #display the code
+                      message = FALSE,              #do not show the message
+                      warning = FALSE,              #do not show the warning
+                      fig.path = "../output/")      #set the output for image
+```
+# Data Preparation
+Load all Libraries
+```{r}
+library(here)
+library(ggplot2)
+library(dplyr)
+library(tidyverse)
+library(leaflet) #to use map
+library(gridExtra) #to let bar plot side by side in one row
+library(shiny)
+library(gganimate)
+
+
+```
+
+Read the data
+```{r}
+df_1<- read_csv(here("final_project", "data", "turtle_sighting.csv"))
+df_2<- read_csv(here("final_project", "data", "when_sighting.csv"))
+df<- read_csv(here("final_project", "data", "monitoring.csv"))
+```
+
+## Project Location, Buru Island, Indonesia
+```{r, fig.width= 9, fig.height= 6}
+leaflet() %>% 
+   addTiles() %>% 
+   setView( lng = 126.60937 , lat = -3.06195, zoom = 3 ) %>% 
+   addProviderTiles("Esri.WorldImagery") %>%
+  addMarkers(
+    lng = 126.60937, 
+    lat = -3.06195, 
+    popup = "Project Location" 
+  )
+```
+
+Pulau Buru, Maluku, Indonesia dipilih menjadi area of interest karena adanya informasi keberadaan penyu dan kegiatan pemanfaatan penyu di wilayah ini. Oleh sebab itu, tim WWF Indonesia pada tahun 2016 melakukan preliminary studies dengan mewawancarai 12 key informants yang merupak masyarakat lokal dan customary leaders. 
+```{r, fig.width= 12, fig.height= 6}
+species <- ggplot(df_1, aes(x = species, y = total))+
+                  geom_bar(stat = "identity", fill = "steelblue") +
+  scale_x_discrete(labels = c(
+    "green_turtle" = "Green Turtle",
+    "hawksbil_turtle" = "Hawksbill Turtle",
+    "olive_ridley" = "Olive Ridley",
+    "flatback_turtle" = "Flatback Turtle",
+    "leatherback" = "Leatherback"
+  )) +
+  labs(x = "", y = "#key informants encounter turtles")+
+  annotate("text", x= 1.5, y = 9.5, label = "n=12", size = 5, alpha = 0.5) +
+  theme_minimal()
+
+when <- ggplot(df_2, aes(x =when, y = total))+
+                  geom_bar(stat = "identity", fill = "steelblue") +
+  scale_x_discrete(labels = c(
+    "fishing" = "Fishing",
+    "nesting" = "Nesting",
+    "hunting" = "Hunting",
+    "sanctuary" = "Captivity",
+    "fishing_trip" = "Fishing Trip",
+    "stranded" = "Stranded on Beach"
+  )) +
+  labs(x = "", y = "#key informants encounter turtles")+
+  annotate("text", x= 1.5, y = 9.5, label = "n=12", size = 5, alpha = 0.5) +
+  theme_minimal()
+
+grid.arrange(species, when, nrow = 1)
+
+```
+Dari hasil key informant survey, diketahui bahwa leatherback turtles and hawksbill turtles merupakan jenis penyu yang paling sering dijumpai. Mayoritas key informants menjumpai penyu saat mereka melakukan perjalan menuju lokasi penangkapan ikan, pada saat memancing, dan pada saat penyu bertelur di pantai. Beberapa key informant juga menyampaikan bahwa masih ada kegiatan pemanfaata penyu dan telur penyu. Mengetahui kondisi tersebut, WWF Indonesia kemudian melakukan pemantauan secara intensif sepanjang tahun 2017 pada area of intereset, yang diduga merupakan  nesting hotspot. Tujuan dari kegiatan ini untuk mengetahui tingkat perburuan penyu dan/atau telur penyu serta untuk mengetahui jumlah kegiatan peneluran, khususnya pada penyu Belimbing. 
+
+#### **Leatherback Turtles Nesting and Non-Nesting Track in 2017**
+```{r, fig.width= 9, fig.height= 6}
+nest_2017 <- df %>%
+  filter(YYYY == "2017")
+
+leaflet(data = nest_2017) %>%
+  addTiles() %>%
+  addCircles(~X, ~Y,
+             radius = 1)
+
+```
+
+
+```{r,  fig.width= 9, fig.height= 5, fig.align= 'center'}
+## Total of Illegal Harvest and Predation
+
+#filter the data
+onlynest_2017 <- nest_2017 %>%
+  filter(Nest_Type %in% c("Nest", "Nesting_Individu")) %>%
+  group_by(MM, Nest_Disturbance) %>%
+  summarise(total = n())
+
+#create the plot
+ggplot(onlynest_2017, aes(x = factor(MM, levels = 1:12), y = total, fill = Nest_Disturbance))+
+                  geom_bar(stat = "identity", position = "fill") +
+  scale_x_discrete(labels = c(
+    "1" = "Jan",
+    "2" = "Feb",
+    "3" = "Mar",
+    "4" = "Apr",
+    "5" = "May",
+    "6" = "Jun",
+    "7" = "Jul",
+    "8" = "Aug",
+    "9" = "Sep",
+    "10" = "Oct",
+    "11" = "Nov",
+    "12" = "Dec"
+  )) +
+  scale_fill_manual(
+    values = c(
+      "Lost" = "brown1",
+      "Predated" = "darkkhaki",
+      "Secure" = "steelblue"
+    )
+  ) +
+  labs(
+    title = "Percentage of nest illegally harvested (lost), predated and secured",
+    y = "Proportion",
+    x = "",
+    fill = "Nest Disturbance") +
+    theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold")
+  )
+
+```
+Dari hasil monitoring survey di tahun 2017, diketahui bahwa proporsi sarang penyu yang hilang akibat illegally harvestedd sangat tinggi, khususnya di awal bulan saat kegiatan monitoring baru mulai dilakukan. Namun jumlah sarang yang hilang akibat illegal harvesting semakin berkurang di bulan agustus ingga akhir tahun, diduga karena masyarakat sudah mulai menyadari kegiatan patorli pantai, seiring dengan adanya teguran yang diberikan oleh patroler untuk menghimbau masyarakat agatr tidak mengambil sarang telur penyu.  Melihat efek penurunan sarang hilang yang semakin meningkat, maka kegiatan monitoring terus dilakukan hingga saat ini. Kegiatan monitoring juga mendata jumlah sarang harian. Data yang dikumpulkan memberikan informasi penting mengenai karakteristik penyu belimbing di pulau buru. 
+
+
+```{r, fig.width= 12, fig.height= 6}
+df_clean <- df %>%
+  drop_na(X,Y)
+  
+library(ggmap)
+
+# Register Google API Key (you need a valid API key for Google Maps)
+#register_google(key = "AIzaSyAHSBGf17mASnF5KeYjQmfxLP-KixDffHo")
+
+# Define the location and zoom level
+#sat_map <- get_map(location = c(lon = 126.59, lat = -3.06195),
+#                   zoom = 14, maptype = "satellite")
+##trial
+sat_map <- get_map(location = c(left = 126.5156464, right = 126.6273079 , bottom = -3.0970742, top = -3.0564145), zoom = 12, maptype = "satellite")
+
+# Plot the map
+ggmap(sat_map) +
+  geom_point(data = df_clean, aes(x= X , y= Y), size = 1, alpha = 0.5, color = "yellow") +
+  labs(title = "Annual Distribution of Leatherback Turtle Nest on Buru Island",
+       subtitle = "Year:{closest_state}") +
+  theme_minimal()+
+  theme(
+    plot.title = element_text(hjust = 0.5,
+                              face = "bold",
+                              size = 16,
+                              margin = margin(b = 10)),
+    plot.subtitle = element_text(hjust = 0.5,
+                                 size = 13)) +
+  coord_fixed(ratio = 4/10) +
+  transition_states(YYYY, transition_length = 1, state_length = 1) +
+  ease_aes('sine-in-out') 
+
+```
+
+Selama program monitoring penyu belimbing di kecamatan fena leisela, diketahui bahwa nesting hotspot terletak di dua lokasi berbeda. Kepadatan sarang penyu di lokasi tersebut lebih tinggi dibandingkan area lainnya. Fenomena ini terjadi setiap tahun.
+diketahui bahwaa jumlah penyu belimbing yang bertelur setiap tahunnya sangatlah fluktuatif. 
+
+## Total nests that were illegaly harvested and predated
+```{r}
+
+```
+
+paragraph of explaination
+
+## Some Pictures from the Field
+```{r}
+
+```
+
+# What is the Nesting Trend of Leatherback Turtles on Buru Island ?
+```{r}
+#add animated chart here
+```
+
+paragraph explaination
+
+# Is the nesting trend decreasing ? or increasing ?
+```{r}
+
+```
+
+# When is the nesting time ?
+```{r}
+
+```
+
+
+# Conclusion
+
+
+
+

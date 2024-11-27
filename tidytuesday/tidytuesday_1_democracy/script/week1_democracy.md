@@ -143,12 +143,12 @@ ggplot(df_gender,                         #use ggplot from df_gender dataset
     labs(x = "",y = "Total",                                           #add label in y axis
     title = "World Presidency: Gender Representation Trends Over Time",#add title
     subtitle = "Year: {round(frame_time)}",                      #add subtitle, and round the year
-    caption = "source: Bjørnskov, C., & Rode, M. (2020)") +      #add caption of source
+    caption = "Source: Data Science Learning Community (2024). Tidy Tuesday: A weekly social data project. https://tidytues.day") +      #add caption of source
   theme_minimal() +                                                   #use this theme type
   theme(
     plot.title = element_text(size = 16, face = "bold", hjust = 0.5), #setting the size, location of title
     plot.subtitle = element_text(size = 12, hjust = 0.5),  #setting the size, location of subtitle
-    plot.caption = element_text(size = 12, hjust = 1),   #setting the size, location of caption
+    plot.caption = element_text(size = 8, hjust = 1),   #setting the size, location of caption
     legend.position = "none") +                 #do not add any legend, as color in bar is obvious
   transition_time(year) +   #add transition by year
   ease_aes('sine-in-out')   #choose this type of animation of transition
