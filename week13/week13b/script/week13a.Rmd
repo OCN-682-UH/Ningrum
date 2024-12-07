@@ -1,0 +1,86 @@
+---
+title: "week 13 - Model"
+author: "Retno K. Ningrum"
+date: "2024-12-06"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(here)
+library(palmerpenguins)
+library(broom)
+library(performance)
+library(modelsummary)
+library(tidymodels)
+library(pandoc)
+```
+
+```{r}
+peng_mod <- lm(bill_length_mm ~ bill_depth_mm*species, data = penguins)
+check_model(peng_mod)
+anova(peng_mod)
+summary(peng_mod)
+
+#view result with broom
+coeffs <- tidy(peng_mod) #use tidy() if you want to see the anova table
+coeffs
+
+result <- glance(peng_mod) #use glance() to see the r2 (r square)
+result
+
+resid_fitt <- augment(peng_mod) #to see the fitted residual 
+resid_fitt
+
+## result in modelsummary
+peng_mod_noX <- lm(bill_length_mm ~ bill_depth_mm, data = penguins)
+
+#make a list to combine mode with and without interaction
+models <- list("Model with interaction" = peng_mod,
+               "Model with no interaction" = peng_mod_noX)
+modelsummary(models, output = here("week13", "week13b", "output", "table.docx"))
+
+```
+
+#check the effect size
+```{r}
+library(wesanderson)
+
+modelplot(models) +
+  labs(x = 'Coefficient', 
+         y = 'Term names') +
+  scale_color_manual(values = wes_palette('Darjeeling1'))
+
+```
+##if you want to see same model but in lots of different parameter 
+```{r}
+models <- penguins%>%
+  ungroup() %>%     #we want to ungroup the data
+  nest(.by = species) # then turn it into small different dataset using nest()
+
+models #it become smaller dataset and different. 
+```
+```{r}
+models <- penguins%>%
+  ungroup() %>%     #we want to ungroup the data
+  nest(.by = species) %>% # then turn it into small different dataset using nest()
+  mutate(fit = map(data, ~lm(bill_length_mm~ body_mass_g, data = .)))
+
+models #this already with the linear model in each dataset
+
+result <- models %>%
+  mutate(coeffs = map(fit, tidy), #tidy is a function to get the coeef value
+         modelresults = map(fit, glance)) #glance is a function to get....?
+
+result
+
+##now I just want the result not the raw data
+result <- models %>%
+  mutate(coeffs = map(fit, tidy), #tidy is a function to get the coeef value
+         modelresults = map(fit, glance)) %>% #glance is a function to get....?
+  select(species, coeffs, modelresults) %>%
+  unnest()
+
+view(result)
+```
+
