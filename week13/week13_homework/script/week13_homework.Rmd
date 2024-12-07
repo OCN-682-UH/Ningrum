@@ -18,7 +18,7 @@ library(purrr)
 library(dplyr)
 ```
 
-###read data
+### read data
 ```{r}
 df1 <- read_csv(here("week13", "week13_homework", "data", "TP1.csv"))
 
